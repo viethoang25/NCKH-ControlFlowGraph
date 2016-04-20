@@ -26,6 +26,7 @@ public class SyntaxManager {
 		this.source = source;
 		init();
 		splitStatement();
+		distinguishStatementType();
 		sortAscStatement();
 	}
 
@@ -86,7 +87,7 @@ public class SyntaxManager {
 		return check;
 	}
 
-	private void sortAscStatement(){
+	private void sortAscStatement() {
 		Comparator<BaseStatement> comparator = new Comparator<BaseStatement>() {
 			@Override
 			public int compare(BaseStatement s1, BaseStatement s2) {
@@ -97,10 +98,28 @@ public class SyntaxManager {
 		};
 		Collections.sort(this.statementList, comparator);
 	}
-	
+
+	// Distinguish statement type
+	public void distinguishStatementType() {
+		for (BaseStatement s : statementList) {
+			String content = getSourceAt(s.getContent());
+			if (content.contains("if"))
+				s.setType(Constants.STRUCTURE_IF);
+			else if (content.contains("switch"))
+				s.setType(Constants.STRUCTURE_SWITCH);
+			else if (content.contains("do"))
+				s.setType(Constants.STRUCTURE_DO);
+			else if (content.contains("while"))
+				s.setType(Constants.STRUCTURE_WHILE);
+			else if (content.contains("for"))
+				s.setType(Constants.STRUCTURE_FOR);
+		}
+	}
+
 	public void printStatementList() {
 		for (BaseStatement state : statementList) {
 			System.out.println("-------------");
+			System.out.println("Type : " + state.getType());
 			System.out.println("Content : " + state.getContent() + "\n"
 					+ getSourceAt(state.getContent()));
 			if (state instanceof SelectionStatement) {

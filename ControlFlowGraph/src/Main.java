@@ -19,5 +19,6 @@ public class Main {
 		syntaxManager.printStatementList();*/
 		CfgTree tree = new CfgTree(fileManager.getData());
 		tree.printNodeList();
+		tree.printEdgeList();
 	}
 }

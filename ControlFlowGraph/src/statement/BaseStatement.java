@@ -6,6 +6,7 @@ public class BaseStatement {
 
 	protected int level;
 	protected Position content;
+	protected int type;
 	
 	public BaseStatement(Position content){
 		this.content = content;
@@ -25,6 +26,14 @@ public class BaseStatement {
 
 	public void setContent(Position content) {
 		this.content = content;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
 	}
 	
 }

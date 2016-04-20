@@ -12,7 +12,10 @@ int main()
 	a = 34;
 	b = 75;
 	int i;
-	if (a > b) swap(a,b);
+	if (a > b) {
+		swap(a,b);
+		while (a > 5) a++;
+	}
 	else
 		for ( i=0; i < 10; i++)
 		{
@@ -24,16 +27,9 @@ int main()
 		if (a - 5 > b) a -= 10;
 		else b = a;
 	else b = -a;
-	/*switch(a){
-	case 1:
-		a = 10;
-		break;
-	case 2:
-		a = 20;
-		break;
-	case 3:
-		a = 30;
-		break;
-	}*/
+	do{
+		b++;
+		a--;
+	} while (b > 5);
 	return 0;
 }

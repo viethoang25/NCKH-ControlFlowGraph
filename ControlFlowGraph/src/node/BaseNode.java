@@ -7,19 +7,23 @@ public class BaseNode {
 	protected int index;
 	protected int functionId;
 	protected String content;
-	// Position of Content
+	// Position of all Content
 	protected Position position;
-	
+
+	protected int parentId;
+	protected boolean isEnd;
+
 	public BaseNode() {
-		
+		this.isEnd = false;
 	}
 
 	public BaseNode(int index, String content, Position position) {
 		this.index = index;
 		this.content = content;
 		this.position = position;
+		this.isEnd = false;
 	}
-	
+
 	public int getIndex() {
 		return index;
 	}
@@ -51,5 +55,21 @@ public class BaseNode {
 	public void setPosition(Position position) {
 		this.position = position;
 	}
-	
+
+	public int getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(int parentId) {
+		this.parentId = parentId;
+	}
+
+	public boolean isEnd() {
+		return isEnd;
+	}
+
+	public void setEnd(boolean isEnd) {
+		this.isEnd = isEnd;
+	}
+
 }
