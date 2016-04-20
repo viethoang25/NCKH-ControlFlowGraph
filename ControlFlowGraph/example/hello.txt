@@ -1,0 +1,39 @@
+int swap(int a, int b)
+{
+	int temp = a;
+	a = b;
+	b = temp;
+	return 1;
+}
+
+int main()
+{
+	int a, b;
+	a = 34;
+	b = 75;
+	int i;
+	if (a > b) swap(a,b);
+	else
+		for ( i=0; i < 10; i++)
+		{
+			a += 1;
+			b -= 1;
+		}
+	while (a > b) b -= a;
+	if (a > b)
+		if (a - 5 > b) a -= 10;
+		else b = a;
+	else b = -a;
+	/*switch(a){
+	case 1:
+		a = 10;
+		break;
+	case 2:
+		a = 20;
+		break;
+	case 3:
+		a = 30;
+		break;
+	}*/
+	return 0;
+}
