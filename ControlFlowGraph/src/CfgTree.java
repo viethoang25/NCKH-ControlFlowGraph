@@ -5,8 +5,10 @@ import java.util.List;
 
 import position.Position;
 import node.BaseNode;
+import node.CallNode;
 import node.DoNode;
 import node.ForNode;
+import node.FunctionNode;
 import node.IfNode;
 import node.WhileNode;
 import statement.BaseStatement;
@@ -22,6 +24,7 @@ public class CfgTree {
 	protected List<BaseStatement> statementList;
 	protected List<BaseNode> nodeList;
 	protected List<BaseEdge> edgeList;
+	protected List<BaseEdge> mainTree;
 
 	public CfgTree(String sourceCode) {
 		this.sourceCode = sourceCode;
@@ -31,6 +34,7 @@ public class CfgTree {
 		setParentForNode();
 		// sortAscNode();
 		createEdge();
+		createMainTree();
 	}
 
 	private void init() {
@@ -39,12 +43,13 @@ public class CfgTree {
 		this.statementList = syntaxManager.getStatementList();
 		nodeList = new ArrayList<>();
 		edgeList = new ArrayList<>();
+		mainTree = new ArrayList<>();
 	}
 
 	public void createNode() {
 		int index = 0;
 		for (FunctionInfor f : functionList) {
-			nodeList.add(new BaseNode(index, f.getName(), f.getContent()));
+			nodeList.add(new FunctionNode(index, f.getName(), f.getContent()));
 			index++;
 		}
 		for (BaseStatement s : statementList) {
@@ -94,14 +99,47 @@ public class CfgTree {
 					nodeList.add(node);
 				}
 			} else {
-				nodeList.add(new BaseNode(index, getSourceAt(s.getContent()), s
-						.getContent()));
+				String content = getSourceAt(s.getContent());
+				int callIndex = -1;
+				for (int i = 0; i < functionList.size(); i++) {
+					BaseNode n = nodeList.get(i);
+					if (content.contains(n.getContent())) {
+						callIndex = i;
+						break;
+					}
+				}
+				if (callIndex != -1) {
+					// Create function call node
+					CallNode callNode = new CallNode(index, content,
+							s.getContent());
+					callNode.setCallId(callIndex);
+					nodeList.add(callNode);
+				} else {
+					// Create normal node
+					nodeList.add(new BaseNode(index,
+							getSourceAt(s.getContent()), s.getContent()));
+				}
 			}
 			index++;
 		}
 	}
 
 	public void createEdge() {
+		// Create edge for Function node
+		for (int i = 0; i < functionList.size(); i++) {
+			BaseNode node = nodeList.get(i);
+			int j = 0;
+			for (j = 0; i < nodeList.size(); j++) {
+				if (nodeList.get(j) != node
+						&& nodeList.get(j).getFunctionId() == node.getIndex())
+					break;
+			}
+			BaseEdge edge = new BaseEdge();
+			edge.setNode(node, nodeList.get(j));
+			edgeList.add(edge);
+		}
+
+		// Create edge for another node
 		for (int i = 0; i < nodeList.size(); i++) {
 
 			if (i + 1 == nodeList.size()
@@ -253,6 +291,52 @@ public class CfgTree {
 		}
 	}
 
+	public void createMainTree() {
+		// Find main function node id
+		int mainId = -1;
+		for (BaseNode n : nodeList) {
+			if (n.getContent().equals("main")) {
+				mainId = n.getIndex();
+				break;
+			}
+		}
+		// If don't have main function -> stop
+		if (mainId == -1) {
+			System.out.println("Don't have main function");
+			return;
+		}
+		// Create basic main tree
+		for (BaseEdge e : edgeList) {
+			if (e.getSource().getFunctionId() == mainId)
+				mainTree.add(e);
+		}
+
+		// Update if have function call
+		// CHU Y: 1. CAN DOC LAI | 2. Moi chi ap dung cho goi ham bi goi o ham chinh => Can them while de duyet
+		List<BaseEdge> callTree = new ArrayList<>();
+		for (int i = 0; i < mainTree.size(); i++) {
+			BaseEdge e = mainTree.get(i);
+			if (e.getDestination() instanceof CallNode) {
+				// Get Id of function is called
+				int callId = ((CallNode) e.getDestination()).getCallId();
+				for (BaseEdge b : edgeList) {
+					if (b.getSource().getFunctionId() == callId) {
+						if (b.getSource().getIndex() == callId) {
+							// Replace e.getDestination() with b.getSource()
+							BaseEdge newEdge = new BaseEdge();
+							newEdge.setNode(e.getDestination(), b.getDestination());
+							callTree.add(newEdge);
+						} else {
+							callTree.add(b);
+						}
+					}
+				}
+			}
+		}
+		mainTree.addAll(callTree);
+
+	}
+
 	public void setFuctionForNode() {
 		// Function node have id from 0->functionList's size
 		for (int i = 0; i < functionList.size(); i++) {
@@ -337,4 +421,16 @@ public class CfgTree {
 					+ e.getDestination().getIndex() + " : " + e.getLabel());
 		}
 	}
+	
+	public void printMainTreeList() {
+		for (BaseEdge e : mainTree) {
+			System.out.println(e.getSource().getIndex() + " ---> "
+					+ e.getDestination().getIndex() + " : " + e.getLabel());
+		}
+	}
+
+	public List<BaseEdge> getMainTree() {
+		return mainTree;
+	}
+	
 }

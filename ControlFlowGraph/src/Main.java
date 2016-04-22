@@ -20,5 +20,7 @@ public class Main {
 		CfgTree tree = new CfgTree(fileManager.getData());
 		tree.printNodeList();
 		tree.printEdgeList();
+		System.out.println("-------------------------------------");
+		tree.printMainTreeList();
 	}
 }
