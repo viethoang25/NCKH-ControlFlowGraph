@@ -10,6 +10,7 @@ public class BaseNode {
 	// Position of all Content
 	protected Position position;
 
+	// Check parentId and check if this node is the end of parent block
 	protected int parentId;
 	protected boolean isEnd;
 
