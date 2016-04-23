@@ -12,7 +12,7 @@ import file.FileManager;
 public class Main {
 	public static void main(String[] args) {
 		FileManager fileManager = FileManager.getInstance();
-		fileManager.init("example\\");
+		fileManager.init("/Users/LisM/Desktop/Nghien cuu khoa hoc/app/NCKH/NCKH-ControlFlowGraph/ControlFlowGraph/example/");
 		fileManager.readFile("hello.txt");
 		
 		/*SyntaxManager syntaxManager = new SyntaxManager(fileManager.getData());
