@@ -15,7 +15,6 @@ public class Main {
 		FileManager fileManager = FileManager.getInstance();
 		fileManager.init("/Users/LisM/Desktop/Nghien cuu khoa hoc/app/NCKH/NCKH-ControlFlowGraph/ControlFlowGraph/example/");
 		fileManager.readFile("hello.txt");
-		
 		/*SyntaxManager syntaxManager = new SyntaxManager(fileManager.getData());
 		syntaxManager.printStatementList();*/
 		CfgTree tree = new CfgTree(fileManager.getData());

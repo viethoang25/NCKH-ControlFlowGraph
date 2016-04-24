@@ -142,12 +142,15 @@ public class CfgTree {
 		// Create edge for another node
 		for (int i = 0; i < nodeList.size(); i++) {
 
-			if (i + 1 == nodeList.size()
+			/*if (i + 1 == nodeList.size()
 					|| nodeList.get(i).getFunctionId() != nodeList.get(i + 1)
 							.getFunctionId())
-				continue;
+				continue;*/
 
 			BaseNode node = nodeList.get(i);
+			if (node instanceof FunctionNode) {
+				continue;
+			}
 			if (node instanceof IfNode) {
 				BaseEdge edge;
 				// Create edge true
@@ -203,6 +206,12 @@ public class CfgTree {
 				}
 
 				// Create edge false
+				if(node.isEnd()){
+					edge = getEdgeAtEndNode(node);
+					edge.setLabel(Constants.LABEL_FALSE);
+					edgeList.add(edge);
+					continue;
+				}
 				int falseId = -1;
 				int minPos = 10000;
 				for (int j = 0; j < nodeList.size(); j++) {
@@ -239,6 +248,12 @@ public class CfgTree {
 				}
 
 				// Create edge false
+				if(node.isEnd()){
+					edge = getEdgeAtEndNode(node);
+					edge.setLabel(Constants.LABEL_FALSE);
+					edgeList.add(edge);
+					continue;
+				}
 				int falseId = -1;
 				int minPos = 10000;
 				for (int j = 0; j < nodeList.size(); j++) {
@@ -257,7 +272,9 @@ public class CfgTree {
 				}
 			} else {
 				if (node.isEnd()) {
-					BaseNode parentNode = nodeList.get(node.getParentId());
+					BaseEdge edge = getEdgeAtEndNode(node);
+					edgeList.add(edge);
+					/*BaseNode parentNode = nodeList.get(node.getParentId());
 					if (parentNode instanceof IfNode) {
 						int nodeId = -1;
 						int minPos = 10000;
@@ -282,7 +299,7 @@ public class CfgTree {
 						BaseEdge edge = new BaseEdge();
 						edge.setNode(node, parentNode);
 						edgeList.add(edge);
-					}
+					}*/
 				} else {
 					BaseEdge edge = new BaseEdge();
 					edge.setNode(node, nodeList.get(i + 1));
@@ -292,6 +309,44 @@ public class CfgTree {
 		}
 	}
 
+	private BaseEdge getEdgeAtEndNode(BaseNode node){
+		BaseEdge edge = null;
+		BaseNode parentNode = nodeList.get(node.getParentId());
+		if (parentNode instanceof IfNode) {
+			int nodeId = -1;
+			int minPos = 10000;
+			for (int j = 0; j < nodeList.size(); j++) {
+				int startPos = nodeList.get(j).getPosition().start;
+				Position pos = parentNode.getPosition();
+				if (pos.end < startPos && startPos < minPos) {
+					nodeId = j;
+					minPos = startPos;
+				}
+			}
+			if (nodeId != -1) {
+				edge = new BaseEdge();
+				edge.setNode(node, nodeList.get(nodeId));
+				//edgeList.add(edge);
+			}
+		} else if (parentNode instanceof WhileNode) {
+			edge = new BaseEdge();
+			edge.setNode(node, parentNode);
+			//edgeList.add(edge);
+		} else if (parentNode instanceof ForNode) {
+			edge = new BaseEdge();
+			edge.setNode(node, parentNode);
+			//edgeList.add(edge);
+		} else {
+			// Edge for return node
+			edge = new BaseEdge();
+			edge.setNode(node, parentNode);
+			// Edge node->node+1 : case {}
+			/*edge = new BaseEdge();
+			edge.setNode(node, nodeList.get(nodeList.indexOf(edge) + 1));*/
+		}
+		return edge;
+	}
+	
 	public void createMainTree() {
 		// Find main function node id
 		int mainId = -1;
