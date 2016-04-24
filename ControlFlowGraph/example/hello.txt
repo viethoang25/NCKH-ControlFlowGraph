@@ -14,7 +14,6 @@ int main()
 	int i;
 	if (a > b) {
 		swap(a,b);
-		while (a > 5) a++;
 	}
 	else
 		for ( i=0; i < 10; i++)
@@ -25,7 +24,6 @@ int main()
 	while (a > b) b -= a;
 	if (a > b)
 		if (a - 5 > b) a -= 10;
-		else b = a;
 	else b = -a;
 	do{
 		b++;
