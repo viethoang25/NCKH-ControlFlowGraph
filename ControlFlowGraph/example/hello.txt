@@ -20,7 +20,7 @@ int main()
 	}   
 	if (a > b) {
 		swap(a,b);
-		a += 27
+		while (a > b) b -= a;
 	}
 	else
 		for ( i=0; i < 10; i++)
@@ -28,14 +28,9 @@ int main()
 			a += 1;
 			b -= 1;
 		}
-	while (a > b) b -= a;
 	if (a > b){
 		if (a - 5 > b) a -= 10;
 	}
 	else b = -a;
-	do{
-		b++;
-		a--;
-	} while (b > 5);
 	return 0;
 }
