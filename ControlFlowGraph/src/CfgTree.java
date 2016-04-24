@@ -170,7 +170,8 @@ public class CfgTree {
 				int falseId = -1;
 				for (int j = 0; j < nodeList.size(); j++) {
 					int startPos = nodeList.get(j).getPosition().start;
-					if (((IfNode) node).getFalsePosition().cover(startPos)) {
+					Position fp = ((IfNode) node).getFalsePosition();
+					if (fp != null && fp.cover(startPos)) {
 						falseId = j;
 						break;
 					}
@@ -312,7 +313,8 @@ public class CfgTree {
 		}
 
 		// Update if have function call
-		// CHU Y: 1. CAN DOC LAI | 2. Moi chi ap dung cho goi ham bi goi o ham chinh => Can them while de duyet
+		// CHU Y: 1. CAN DOC LAI | 2. Moi chi ap dung cho goi ham bi goi o ham
+		// chinh => Can them while de duyet
 		List<BaseEdge> callTree = new ArrayList<>();
 		for (int i = 0; i < mainTree.size(); i++) {
 			BaseEdge e = mainTree.get(i);
@@ -324,7 +326,8 @@ public class CfgTree {
 						if (b.getSource().getIndex() == callId) {
 							// Replace e.getDestination() with b.getSource()
 							BaseEdge newEdge = new BaseEdge();
-							newEdge.setNode(e.getDestination(), b.getDestination());
+							newEdge.setNode(e.getDestination(),
+									b.getDestination());
 							callTree.add(newEdge);
 						} else {
 							callTree.add(b);
@@ -421,7 +424,7 @@ public class CfgTree {
 					+ e.getDestination().getIndex() + " : " + e.getLabel());
 		}
 	}
-	
+
 	public void printMainTreeList() {
 		for (BaseEdge e : mainTree) {
 			System.out.println(e.getSource().getIndex() + " ---> "
@@ -432,5 +435,5 @@ public class CfgTree {
 	public List<BaseEdge> getMainTree() {
 		return mainTree;
 	}
-	
+
 }

@@ -12,8 +12,15 @@ int main()
 	a = 34;
 	b = 75;
 	int i;
+	if (a ==1 ){
+		a = 5;
+	}
+	else {
+		a = 34
+	}   
 	if (a > b) {
 		swap(a,b);
+		a += 27
 	}
 	else
 		for ( i=0; i < 10; i++)
@@ -22,8 +29,9 @@ int main()
 			b -= 1;
 		}
 	while (a > b) b -= a;
-	if (a > b)
+	if (a > b){
 		if (a - 5 > b) a -= 10;
+	}
 	else b = -a;
 	do{
 		b++;
