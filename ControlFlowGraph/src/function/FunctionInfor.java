@@ -6,10 +6,12 @@ public class FunctionInfor {
 
 	protected String name;
 	protected Position content;
-	
-	public FunctionInfor(String name, Position content) {
+	protected Position parameter;
+
+	public FunctionInfor(String name, Position content, Position parameter) {
 		this.name = name;
 		this.content = content;
+		this.parameter = parameter;
 	}
 
 	public String getName() {
@@ -27,5 +29,13 @@ public class FunctionInfor {
 	public void setContent(Position content) {
 		this.content = content;
 	}
-	
+
+	public Position getParameter() {
+		return parameter;
+	}
+
+	public void setParameter(Position parameter) {
+		this.parameter = parameter;
+	}
+
 }

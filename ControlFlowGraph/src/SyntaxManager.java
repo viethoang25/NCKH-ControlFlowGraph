@@ -7,6 +7,7 @@ import node.BaseNode;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
@@ -15,12 +16,14 @@ import position.Position;
 import statement.BaseStatement;
 import statement.IterationStatement;
 import statement.SelectionStatement;
+import variable.VariableInfor;
 
 public class SyntaxManager {
 
 	protected String source;
 	protected List<FunctionInfor> functionList;
 	protected List<BaseStatement> statementList;
+	protected List<VariableInfor> variableList;
 
 	public SyntaxManager(String source) {
 		this.source = source;
@@ -28,6 +31,7 @@ public class SyntaxManager {
 		splitStatement();
 		distinguishStatementType();
 		sortAscStatement();
+		distinguishVariableType();
 	}
 
 	public void init() {
@@ -40,6 +44,7 @@ public class SyntaxManager {
 
 		this.functionList = listener.getFunctionList();
 		this.statementList = listener.getStatementList();
+		this.variableList = listener.getVariableList();
 	}
 
 	public void splitStatement() {
@@ -113,6 +118,58 @@ public class SyntaxManager {
 				s.setType(Constants.STRUCTURE_WHILE);
 			else if (content.contains("for"))
 				s.setType(Constants.STRUCTURE_FOR);
+			else if (getDeclarationType(content) != null)
+				s.setType(Constants.STRUCTURE_DECLARATION);
+		}
+	}
+	
+	public void distinguishVariableType() {
+		for(VariableInfor var : variableList) {
+			for(FunctionInfor f : functionList){
+				if(f.getParameter().cover(var.getPosition().start)){
+					// Set is parameter
+					var.setParameter(true);
+					// Set type
+					String str = getSourceAt(f.getParameter());
+					String[] paras = str.split(",");
+					for(int i = 0; i < paras.length; i++)
+						paras[i] = paras[i] + ";";
+					for(int i = 0; i < paras.length; i++){
+						String type = getDeclarationType(paras[i]);
+						
+						if(type == null) continue;
+						else if(type.equals("int"))
+							var.setType(Constants.TYPE_INT);
+						else var.setType(Constants.TYPE_REAL);
+					}
+				}
+			}
+			
+			for(BaseStatement s : statementList) {
+				if(s.getContent().cover(var.getPosition().start)){
+					String type = getDeclarationType(getSourceAt(s.getContent()));
+					
+					if(type == null) continue;
+					else if(type.equals("int"))
+						var.setType(Constants.TYPE_INT);
+					else var.setType(Constants.TYPE_REAL);
+				}
+			}
+		}
+	}
+
+	public String getDeclarationType(String str) {
+		CLexer lexer = new CLexer(new ANTLRInputStream(str));
+		CLexer temp = new CLexer(new ANTLRInputStream(str));
+		CParser parser = new CParser(new CommonTokenStream(lexer));
+		// parser.removeErrorListeners();
+		parser.reset();
+		parser.declaration();
+		if (parser.getNumberOfSyntaxErrors() > 0)
+			return null;
+		else {
+			Token t = temp.nextToken();
+			return t.getText();
 		}
 	}
 
@@ -149,6 +206,13 @@ public class SyntaxManager {
 		}
 	}
 
+	public void printVariableList(){
+		for(VariableInfor var : variableList){
+			System.out.println("-------------");
+			System.out.println(var.toString());
+		}
+	}
+	
 	private String getSourceAt(Position position) {
 		return this.source.substring(position.start, position.end + 1);
 	}
@@ -175,6 +239,14 @@ public class SyntaxManager {
 
 	public void setStatementList(List<BaseStatement> statementList) {
 		this.statementList = statementList;
+	}
+
+	public List<VariableInfor> getVariableList() {
+		return variableList;
+	}
+
+	public void setVariableList(List<VariableInfor> variableList) {
+		this.variableList = variableList;
 	}
 
 }
