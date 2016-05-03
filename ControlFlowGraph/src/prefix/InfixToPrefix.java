@@ -8,10 +8,12 @@ public class InfixToPrefix {
 	private List<Character> prefix;
 	private List<Boolean> check = new ArrayList<>();
 	private List<Boolean> checkPrefix = new ArrayList<>();
+	private String theRealPrefix;
 	public InfixToPrefix(List<Character> infix){
 		for (int i=0; i<infix.size(); i++) this.check.add(false);
 		this.infix = new ArrayList<>(convertStandard(infix));
 		prefix = new ArrayList<>();
+		theRealPrefix = new String();
 	}
 	
 	public void infixToPrefix(){
@@ -78,7 +80,16 @@ public class InfixToPrefix {
 				this.checkPrefix.add(i+1, false);
 			}
 		}
-		System.out.println(this.prefix);
+		for (int i=0; i<this.prefix.size(); i++){
+			if (this.prefix.get(i) == '|'){
+				this.theRealPrefix += "or ";
+			}else if (this.prefix.get(i) == '&'){
+				this.theRealPrefix += "and ";
+			}else{
+				this.theRealPrefix += Character.toString(this.prefix.get(i)) + " ";
+			}
+		}
+		System.out.println(this.theRealPrefix);
 	}
 	
 	private List<Character> setParentheses(List<Character> arr){
