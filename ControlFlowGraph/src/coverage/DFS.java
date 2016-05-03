@@ -31,6 +31,7 @@ public class DFS {
 		int v = endVertex;
 		while (v != startVertex){
 			System.out.print(v+" <- ");
+			free[v] = true;
 			v = path[v];
 		}
 		System.out.println(startVertex);
