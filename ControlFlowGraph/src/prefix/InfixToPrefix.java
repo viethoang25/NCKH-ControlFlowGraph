@@ -212,8 +212,8 @@ public class InfixToPrefix {
 		return check;
 	}
 	
-	public List<Character> getPrefix(){
-		return this.prefix;
+	public String getPrefix(){
+		return this.theRealPrefix;
 	}
 	
 	private List<Character> convertStandard(List<Character> arr){
