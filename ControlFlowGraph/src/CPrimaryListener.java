@@ -1,20 +1,25 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.InitialContext;
+
 import function.FunctionInfor;
 import position.Position;
 import statement.BaseStatement;
 import statement.IterationStatement;
 import statement.SelectionStatement;
+import variable.VariableInfor;
 
 public class CPrimaryListener extends CBaseListener {
 
 	private List<FunctionInfor> functionList;
 	private List<BaseStatement> statementList;
+	private List<VariableInfor> variableList;
 
 	public CPrimaryListener() {
 		functionList = new ArrayList<>();
 		statementList = new ArrayList<>();
+		variableList = new ArrayList<>();
 	}
 
 	public List<FunctionInfor> getFunctionList() {
@@ -25,12 +30,18 @@ public class CPrimaryListener extends CBaseListener {
 		return statementList;
 	}
 
+	public List<VariableInfor> getVariableList() {
+		return variableList;
+	}
+
 	@Override
 	public void enterFunctionDefinition(CParser.FunctionDefinitionContext ctx) {
 		CParser.DirectDeclaratorContext ddc = ctx.declarator()
 				.directDeclarator().directDeclarator();
+		
 		if (ddc != null) {
 			String name = ddc.getText();
+			// Get function content
 			Position content = null;
 			CParser.BlockItemListContext bilc = ctx.compoundStatement()
 					.blockItemList();
@@ -39,7 +50,16 @@ public class CPrimaryListener extends CBaseListener {
 				int end = bilc.stop.getStopIndex();
 				content = new Position(start, end);
 			}
-			functionList.add(new FunctionInfor(name, content));
+			// Get function parameter
+			CParser.ParameterTypeListContext prlc = ctx.declarator().directDeclarator().parameterTypeList();
+			Position parameter = null;
+			if(prlc != null){
+				int start = prlc.start.getStartIndex();
+				int end = prlc.stop.getStopIndex();
+				parameter = new Position(start, end);
+			}
+			
+			functionList.add(new FunctionInfor(name, content, parameter));
 		}
 
 	}
@@ -114,5 +134,50 @@ public class CPrimaryListener extends CBaseListener {
 			this.statementList.add(new IterationStatement(content, expression,
 					statement));
 		}
+	}
+
+	@Override
+	public void enterDeclarator(CParser.DeclaratorContext ctx) {
+		// variable list don't need Function Definition
+		if (ctx.getParent() instanceof CParser.FunctionDefinitionContext)
+			return;
+
+		VariableInfor var = new VariableInfor();
+
+		if (ctx.directDeclarator().directDeclarator() == null) {
+			// Normal
+			int start = ctx.directDeclarator().start.getStartIndex();
+			int end = ctx.directDeclarator().stop.getStopIndex();
+			var.setName(ctx.directDeclarator().getText());
+			var.setPosition(new Position(start, end));
+		} else {
+			// Array
+			int start = ctx.directDeclarator().directDeclarator().start
+					.getStartIndex();
+			int end = ctx.directDeclarator().directDeclarator().stop
+					.getStopIndex();
+			var.setArray(true);
+			var.setName(ctx.directDeclarator().directDeclarator().getText());
+			var.setPosition(new Position(start, end));
+		}
+
+		// If declarator have initializer
+		if (ctx.getParent() instanceof CParser.InitDeclaratorContext) {
+			CParser.InitializerContext initializerContext = ((CParser.InitDeclaratorContext) ctx
+					.getParent()).initializer();
+			if (initializerContext != null)
+				var.setInitializer(initializerContext.getText());
+		}
+
+		variableList.add(var);
+	}
+
+	@Override
+	public void enterTypeName(CParser.TypeNameContext ctx) {
+		VariableInfor var = new VariableInfor(ctx.getText());
+		int start = ctx.start.getStartIndex();
+		int end = ctx.stop.getStopIndex();
+		var.setPosition(new Position(start, end));
+		variableList.add(var);
 	}
 }
