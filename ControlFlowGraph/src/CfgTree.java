@@ -560,4 +560,12 @@ public class CfgTree {
 		return mainTree;
 	}
 
+	public List<BaseEdge> getEdgeList() {
+		return edgeList;
+	}
+
+	public List<BaseNode> getNodeList() {
+		return nodeList;
+	}
+
 }

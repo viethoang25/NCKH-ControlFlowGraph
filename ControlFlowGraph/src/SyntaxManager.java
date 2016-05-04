@@ -120,6 +120,8 @@ public class SyntaxManager {
 				s.setType(Constants.STRUCTURE_FOR);
 			else if (getDeclarationType(content) != null)
 				s.setType(Constants.STRUCTURE_DECLARATION);
+			else if (checkExpressionType(content))
+				s.setType(Constants.STRUCTURE_EXPRESSION);
 		}
 	}
 	
@@ -170,6 +172,23 @@ public class SyntaxManager {
 		else {
 			Token t = temp.nextToken();
 			return t.getText();
+		}
+	}
+	
+	public boolean checkExpressionType(String str){
+		String temp = new String(str);
+		if(temp.contains(";")){
+			temp = temp.substring(0, temp.lastIndexOf(';'));
+		}
+		CLexer lexer = new CLexer(new ANTLRInputStream(temp));
+		CParser parser = new CParser(new CommonTokenStream(lexer));
+		// parser.removeErrorListeners();
+		parser.reset();
+		parser.expression();
+		if (parser.getNumberOfSyntaxErrors() > 0)
+			return false;
+		else {
+			return true;
 		}
 	}
 
