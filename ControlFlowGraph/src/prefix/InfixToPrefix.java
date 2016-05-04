@@ -9,14 +9,22 @@ public class InfixToPrefix {
 	private List<Boolean> check = new ArrayList<>();
 	private List<Boolean> checkPrefix = new ArrayList<>();
 	private String theRealPrefix;
-	public InfixToPrefix(List<Character> infix){
-		for (int i=0; i<infix.size(); i++) this.check.add(false);
-		this.infix = new ArrayList<>(convertStandard(infix));
+	public InfixToPrefix(){
+		this.infix = new ArrayList<>();
 		prefix = new ArrayList<>();
 		theRealPrefix = new String();
 	}
 	
-	public void infixToPrefix(){
+	public void setInfix(String infix){
+		for (Character c: infix.toCharArray()){
+			this.infix.add(c);
+		}
+		for (int i=0; i<this.infix.size(); i++) this.check.add(false);
+		this.infix = convertStandard(this.infix);
+		infixToPrefix();
+	}
+	
+	private void infixToPrefix(){
 		Character symbol;
 		List<Character> stack = new ArrayList<>();
 		List<Boolean> checkStack = new ArrayList<>();
@@ -97,7 +105,7 @@ public class InfixToPrefix {
 		int i = 0;
 		int countOperand;
 		int countParentheses;
-		while (i < arr.size()-1){
+		while (i < arr.size()){
 			if (isOperator(arr.get(i)) == true){
 				
 				countOperand = 0;
@@ -239,14 +247,10 @@ public class InfixToPrefix {
 	}
 	
 	
-	public static void main(String[] args) {
-		String str = "(A/B<=3&&A!=C)||A>=5";
-		List<Character> temp = new ArrayList<>();
-		for (Character c: str.toCharArray()){
-			temp.add(c);
-		}
-		InfixToPrefix a = new InfixToPrefix(temp);
-		a.infixToPrefix();
-	}
+//	public static void main(String[] args) {
+//		String str = "(A/B<=3&&A!=C)||A>=5";
+//		InfixToPrefix a = new InfixToPrefix();
+//		a.setInfix(str);
+//	}
 
 }
