@@ -249,10 +249,10 @@ public class InfixToPrefix {
 	}
 	
 	
-	public static void main(String[] args) {
-		String str = "(A+B) < 5";
-		InfixToPrefix a = new InfixToPrefix();
-		a.setInfix(str);
-	}
+//	public static void main(String[] args) {
+//		String str = "(A+B) < 5";
+//		InfixToPrefix a = new InfixToPrefix();
+//		a.setInfix(str);
+//	}
 
 }
