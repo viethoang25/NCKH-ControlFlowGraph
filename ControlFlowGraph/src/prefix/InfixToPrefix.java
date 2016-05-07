@@ -17,7 +17,9 @@ public class InfixToPrefix {
 	
 	public void setInfix(String infix){
 		for (Character c: infix.toCharArray()){
-			this.infix.add(c);
+			if (c != ' '){
+				this.infix.add(c);
+			}
 		}
 		for (int i=0; i<this.infix.size(); i++) this.check.add(false);
 		this.infix = convertStandard(this.infix);
@@ -247,10 +249,10 @@ public class InfixToPrefix {
 	}
 	
 	
-//	public static void main(String[] args) {
-//		String str = "(A/B<=3&&A!=C)||A>=5";
-//		InfixToPrefix a = new InfixToPrefix();
-//		a.setInfix(str);
-//	}
+	public static void main(String[] args) {
+		String str = "(A+B) < 5";
+		InfixToPrefix a = new InfixToPrefix();
+		a.setInfix(str);
+	}
 
 }
