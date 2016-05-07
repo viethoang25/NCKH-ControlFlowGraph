@@ -1,24 +1,31 @@
 package coverage;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DFS {
-	private int graph[][] = new int[10000][10000];
-	private boolean[] free = new boolean[10000];
+	private List<List<Boolean>> graph = new ArrayList<>();
+	private List<Boolean> free;
 	private int n;
-	private int path[] = new int[10000];
-	public DFS(int sizeArray, int graph[][]){
+	private List<Integer> path;
+	private List<List<Integer>> testPath = new ArrayList<>();
+	public DFS(int sizeArray, List<List<Boolean>> graph){
 		this.n = sizeArray;
-		for (int i=0; i<this.n; i++){
-			free[i] = true;
-		}
 		this.graph = graph;
+		free = new ArrayList<>();
+		path = new ArrayList<>();
+		for (int i=0; i<this.n; i++){
+			free.add(true);
+			path.add(null);
+		}
 	}
 	public void doDFS(int v, int startVertex, int endVertex){
 		if (v != endVertex){
-			if (free[v] == true){
-				free[v] = false;
+			if (free.get(v) == true){
+				free.set(v, false);
 				for (int u=0; u<n; u++){
-					if (free[u] == true && graph[v][u] == 1){
-						path[u] = v;
+					if (free.get(u) == true && graph.get(v).get(u) == true){
+						path.set(u, v);
 						doDFS(u, startVertex, endVertex);
 					}
 				}
@@ -27,14 +34,22 @@ public class DFS {
 			printPath(startVertex, endVertex);
 		}
 	}
-	public void printPath(int startVertex, int endVertex){
+	private void printPath(int startVertex, int endVertex){
 		int v = endVertex;
+		List<Integer> temp = new ArrayList<>();
 		while (v != startVertex){
 			System.out.print(v+" <- ");
-			free[v] = true;
-			v = path[v];
+			temp.add(v);
+			free.set(v, true);
+			v = path.get(v);
 		}
 		System.out.println(startVertex);
+		temp.add(startVertex);
+		testPath.add(temp);
+	}
+	
+	public List<List<Integer>> getTestPath(){
+		return this.testPath;
 	}
 	/*public void running(int startVertex, int endVertex){
 		int v = endVertex;
@@ -45,4 +60,5 @@ public class DFS {
 		}
 		System.out.println(startVertex);
 	}*/
+	
 }
