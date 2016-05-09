@@ -93,11 +93,11 @@ public class PathConstraint {
 			c++;
 		}
 
-		InfixToPrefix infix = new InfixToPrefix();
 		for (String exp : expressionList) {
+			InfixToPrefix infix = new InfixToPrefix();
 			infix.setInfix(exp);
 			String temp = infix.getPrefix();
-			z3Input.append("(assert " + exp + ")\n");
+			z3Input.append("(assert " + temp + ")\n");
 		}
 	}
 
@@ -108,12 +108,12 @@ public class PathConstraint {
 
 	public void printVariableList() {
 		for (String str : variableList.keySet()) {
-			InfixToPrefix infix = new InfixToPrefix();
 			System.out.println(str + " --- " + variableList.get(str));
 		}
 	}
 
 	public void printExpressionList() {
+
 		for (String str : expressionList) {
 			InfixToPrefix infix = new InfixToPrefix();
 			System.out.println(str);
