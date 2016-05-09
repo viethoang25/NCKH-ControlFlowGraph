@@ -6,7 +6,9 @@ import java.util.List;
 import position.Position;
 import node.BaseNode;
 import node.CallNode;
+import node.DeclarationNode;
 import node.DoNode;
+import node.ExpressionNode;
 import node.ForNode;
 import node.FunctionNode;
 import node.IfNode;
@@ -115,9 +117,17 @@ public class CfgTree {
 					callNode.setCallId(callIndex);
 					nodeList.add(callNode);
 				} else {
-					// Create normal node
-					nodeList.add(new BaseNode(index,
-							getSourceAt(s.getContent()), s.getContent()));
+					if (s.getType() == Constants.STRUCTURE_DECLARATION) {
+						nodeList.add(new DeclarationNode(index, getSourceAt(s
+								.getContent()), s.getContent()));
+					} else if (s.getType() == Constants.STRUCTURE_EXPRESSION) {
+						nodeList.add(new ExpressionNode(index, getSourceAt(s
+								.getContent()), s.getContent()));
+					} else {
+						// Create normal node
+						nodeList.add(new BaseNode(index, getSourceAt(s
+								.getContent()), s.getContent()));
+					}
 				}
 			}
 			index++;
@@ -142,10 +152,10 @@ public class CfgTree {
 		// Create edge for another node
 		for (int i = 0; i < nodeList.size(); i++) {
 
-			/*if (i + 1 == nodeList.size()
-					|| nodeList.get(i).getFunctionId() != nodeList.get(i + 1)
-							.getFunctionId())
-				continue;*/
+			/*
+			 * if (i + 1 == nodeList.size() || nodeList.get(i).getFunctionId()
+			 * != nodeList.get(i + 1) .getFunctionId()) continue;
+			 */
 
 			BaseNode node = nodeList.get(i);
 			if (node instanceof FunctionNode) {
@@ -171,12 +181,24 @@ public class CfgTree {
 
 				// Create edge false
 				int falseId = -1;
-				for (int j = 0; j < nodeList.size(); j++) {
-					int startPos = nodeList.get(j).getPosition().start;
-					Position fp = ((IfNode) node).getFalsePosition();
-					if (fp != null && fp.cover(startPos)) {
-						falseId = j;
-						break;
+				Position fp = ((IfNode) node).getFalsePosition();
+				if (fp != null)
+					for (int j = 0; j < nodeList.size(); j++) {
+						int startPos = nodeList.get(j).getPosition().start;
+						if (fp.cover(startPos)) {
+							falseId = j;
+							break;
+						}
+					}
+				else {
+					int minPos = 10000;
+					for (int j = 0; j < nodeList.size(); j++) {
+						int startPos = nodeList.get(j).getPosition().start;
+						Position pos = node.getPosition();
+						if (pos.end < startPos && startPos < minPos) {
+							falseId = j;
+							minPos = startPos;
+						}
 					}
 				}
 				if (falseId != -1) {
@@ -192,8 +214,7 @@ public class CfgTree {
 				int trueId = -1;
 				for (int j = 0; j < nodeList.size(); j++) {
 					int startPos = nodeList.get(j).getPosition().start;
-					if (((DoNode) node).getStatementPosition().cover(
-							startPos)) {
+					if (((DoNode) node).getStatementPosition().cover(startPos)) {
 						trueId = j;
 						break;
 					}
@@ -204,9 +225,9 @@ public class CfgTree {
 					edge.setLabel(Constants.LABEL_TRUE);
 					edgeList.add(edge);
 				}
-				
+
 				// Create edge false
-				if(node.isEnd()){
+				if (node.isEnd()) {
 					edge = getEdgeAtEndNode(node);
 					edge.setLabel(Constants.LABEL_FALSE);
 					edgeList.add(edge);
@@ -248,7 +269,7 @@ public class CfgTree {
 				}
 
 				// Create edge false
-				if(node.isEnd()){
+				if (node.isEnd()) {
 					edge = getEdgeAtEndNode(node);
 					edge.setLabel(Constants.LABEL_FALSE);
 					edgeList.add(edge);
@@ -290,7 +311,7 @@ public class CfgTree {
 				}
 
 				// Create edge false
-				if(node.isEnd()){
+				if (node.isEnd()) {
 					edge = getEdgeAtEndNode(node);
 					edge.setLabel(Constants.LABEL_FALSE);
 					edgeList.add(edge);
@@ -316,33 +337,23 @@ public class CfgTree {
 				if (node.isEnd()) {
 					BaseEdge edge = getEdgeAtEndNode(node);
 					edgeList.add(edge);
-					/*BaseNode parentNode = nodeList.get(node.getParentId());
-					if (parentNode instanceof IfNode) {
-						int nodeId = -1;
-						int minPos = 10000;
-						for (int j = 0; j < nodeList.size(); j++) {
-							int startPos = nodeList.get(j).getPosition().start;
-							Position pos = parentNode.getPosition();
-							if (pos.end < startPos && startPos < minPos) {
-								nodeId = j;
-								minPos = startPos;
-							}
-						}
-						if (nodeId != -1) {
-							BaseEdge edge = new BaseEdge();
-							edge.setNode(node, nodeList.get(nodeId));
-							edgeList.add(edge);
-						}
-					} else if (parentNode instanceof WhileNode) {
-						BaseEdge edge = new BaseEdge();
-						edge.setNode(node, parentNode);
-						edgeList.add(edge);
-					} else if (parentNode instanceof ForNode) {
-						BaseEdge edge = new BaseEdge();
-						edge.setNode(node, parentNode);
-						edgeList.add(edge);
-					}*/
-				} else if (nodeList.get(i + 1) instanceof DoNode){
+					/*
+					 * BaseNode parentNode = nodeList.get(node.getParentId());
+					 * if (parentNode instanceof IfNode) { int nodeId = -1; int
+					 * minPos = 10000; for (int j = 0; j < nodeList.size(); j++)
+					 * { int startPos = nodeList.get(j).getPosition().start;
+					 * Position pos = parentNode.getPosition(); if (pos.end <
+					 * startPos && startPos < minPos) { nodeId = j; minPos =
+					 * startPos; } } if (nodeId != -1) { BaseEdge edge = new
+					 * BaseEdge(); edge.setNode(node, nodeList.get(nodeId));
+					 * edgeList.add(edge); } } else if (parentNode instanceof
+					 * WhileNode) { BaseEdge edge = new BaseEdge();
+					 * edge.setNode(node, parentNode); edgeList.add(edge); }
+					 * else if (parentNode instanceof ForNode) { BaseEdge edge =
+					 * new BaseEdge(); edge.setNode(node, parentNode);
+					 * edgeList.add(edge); }
+					 */
+				} else if (nodeList.get(i + 1) instanceof DoNode) {
 					BaseEdge edge = new BaseEdge();
 					edge.setNode(node, nodeList.get(i + 2));
 					edgeList.add(edge);
@@ -355,7 +366,7 @@ public class CfgTree {
 		}
 	}
 
-	private BaseEdge getEdgeAtEndNode(BaseNode node){
+	private BaseEdge getEdgeAtEndNode(BaseNode node) {
 		BaseEdge edge = null;
 		BaseNode parentNode = nodeList.get(node.getParentId());
 		if (parentNode instanceof IfNode) {
@@ -372,27 +383,29 @@ public class CfgTree {
 			if (nodeId != -1) {
 				edge = new BaseEdge();
 				edge.setNode(node, nodeList.get(nodeId));
-				//edgeList.add(edge);
+				// edgeList.add(edge);
 			}
 		} else if (parentNode instanceof WhileNode) {
 			edge = new BaseEdge();
 			edge.setNode(node, parentNode);
-			//edgeList.add(edge);
+			// edgeList.add(edge);
 		} else if (parentNode instanceof ForNode) {
 			edge = new BaseEdge();
 			edge.setNode(node, parentNode);
-			//edgeList.add(edge);
+			// edgeList.add(edge);
 		} else {
 			// Edge for return node
 			edge = new BaseEdge();
 			edge.setNode(node, parentNode);
 			// Edge node->node+1 : case {}
-			/*edge = new BaseEdge();
-			edge.setNode(node, nodeList.get(nodeList.indexOf(edge) + 1));*/
+			/*
+			 * edge = new BaseEdge(); edge.setNode(node,
+			 * nodeList.get(nodeList.indexOf(edge) + 1));
+			 */
 		}
 		return edge;
 	}
-	
+
 	public void createMainTree() {
 		// Find main function node id
 		int mainId = -1;
@@ -410,7 +423,7 @@ public class CfgTree {
 		// Create basic main tree
 		List<BaseEdge> callNodePointList = new ArrayList<>();
 		for (BaseEdge e : edgeList) {
-			if (e.getSource().getFunctionId() == mainId){
+			if (e.getSource().getFunctionId() == mainId) {
 				if (e.getSource() instanceof CallNode)
 					callNodePointList.add(e);
 				else
@@ -431,30 +444,29 @@ public class CfgTree {
 					if (b.getSource().getFunctionId() == callId) {
 						callTree.add(b);
 					}
-					
+
 					// Another way
-					/*if (b.getSource().getFunctionId() == callId) {
-						if (b.getSource().getIndex() == callId) {
-							// Replace e.getDestination() with b.getSource()
-							BaseEdge newEdge = new BaseEdge();
-							newEdge.setNode(e.getDestination(),
-									b.getDestination());
-							callTree.add(newEdge);
-						} else {
-							callTree.add(b);
-						}
-					}*/
+					/*
+					 * if (b.getSource().getFunctionId() == callId) { if
+					 * (b.getSource().getIndex() == callId) { // Replace
+					 * e.getDestination() with b.getSource() BaseEdge newEdge =
+					 * new BaseEdge(); newEdge.setNode(e.getDestination(),
+					 * b.getDestination()); callTree.add(newEdge); } else {
+					 * callTree.add(b); } }
+					 */
 				}
-				// Create edge at callNode->function and function-> callNode pointer
+				// Create edge at callNode->function and function-> callNode
+				// pointer
 				// CallNode->Function
 				BaseEdge newEdge = new BaseEdge();
 				newEdge.setNode(e.getDestination(), nodeList.get(callId));
 				callTree.add(newEdge);
 				// Function -> CallNode Pointer
-				for (BaseEdge b : edgeList){
-					if(b.getSource() == e.getDestination()) {
+				for (BaseEdge b : edgeList) {
+					if (b.getSource() == e.getDestination()) {
 						newEdge = new BaseEdge();
-						newEdge.setNode(nodeList.get(callId), b.getDestination());
+						newEdge.setNode(nodeList.get(callId),
+								b.getDestination());
 						callTree.add(newEdge);
 					}
 				}
@@ -538,7 +550,8 @@ public class CfgTree {
 	public void printNodeList() {
 		for (BaseNode n : nodeList) {
 			System.out.println(n.getIndex() + " ----- " + n.getParentId()
-					+ " ----- " + n.isEnd() + "\n" + n.getContent());
+					+ " ----- " + n.getPosition() + "\n"
+					+ n.getContent());
 		}
 	}
 
