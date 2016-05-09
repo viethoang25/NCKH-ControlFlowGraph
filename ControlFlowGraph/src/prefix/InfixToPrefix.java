@@ -100,8 +100,18 @@ public class InfixToPrefix {
 				this.theRealPrefix += "or ";
 			}else if (this.prefix.get(i) == '&'){
 				this.theRealPrefix += "and ";
+			}else if (this.prefix.get(i) == '/'){
+				this.theRealPrefix += "div ";
+			}else if (this.prefix.get(i) == '%'){
+				this.theRealPrefix += "mod ";
+			}else if (this.prefix.get(i) == '!'){
+				this.theRealPrefix += "not ";
 			}else{
-				this.theRealPrefix += Character.toString(this.prefix.get(i)) + " ";
+				if (this.checkPrefix.get(i) == true)
+					this.theRealPrefix += Character.toString(this.prefix.get(i));
+				else{
+					this.theRealPrefix += Character.toString(this.prefix.get(i)) + " ";
+				}
 			}
 		}
 		System.out.println(this.theRealPrefix);
@@ -255,7 +265,7 @@ public class InfixToPrefix {
 	
 	
 //	public static void main(String[] args) {
-//		String str = "((((a-b)+b)+(a-b))+(((a-b)+b)-b)) < 2";
+//		String str = "a / b != 3 && c % d >= 5";
 //		InfixToPrefix a = new InfixToPrefix();
 //		a.setInfix(str);
 //	}
