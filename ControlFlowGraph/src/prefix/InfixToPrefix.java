@@ -16,6 +16,11 @@ public class InfixToPrefix {
 	}
 	
 	public void setInfix(String infix){
+		this.infix = new ArrayList<>();
+		this.check = new ArrayList<>();
+		this.prefix = new ArrayList<>();
+		this.theRealPrefix = new String();
+		this.checkPrefix = new ArrayList<>();
 		for (Character c: infix.toCharArray()){
 			if (c != ' '){
 				this.infix.add(c);
@@ -250,7 +255,7 @@ public class InfixToPrefix {
 	
 	
 //	public static void main(String[] args) {
-//		String str = "(A+B) < 5";
+//		String str = "((((a-b)+b)+(a-b))+(((a-b)+b)-b)) < 2";
 //		InfixToPrefix a = new InfixToPrefix();
 //		a.setInfix(str);
 //	}

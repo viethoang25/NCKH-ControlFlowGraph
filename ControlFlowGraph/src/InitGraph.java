@@ -10,12 +10,12 @@ public class InitGraph {
 	private List<List<Boolean>> graph = new ArrayList<>();
 	private List<Boolean> temp;
 	public InitGraph(){
-		for (int i=0; i<edgeList.size(); i++){
+		for (int i=0; i<=edgeList.get(edgeList.size()-1).getSource().getIndex(); i++){
 			temp = new ArrayList<>();
 			graph.add(temp);
 		}
-		for (int i=0; i<edgeList.size(); i++){
-			for (int j=0; j<edgeList.size(); j++){
+		for (int i=0; i<=edgeList.get(edgeList.size()-1).getSource().getIndex(); i++){
+			for (int j=0; j<=edgeList.get(edgeList.size()-1).getSource().getIndex(); j++){
 				graph.get(i).add(false);
 			}
 		}
@@ -27,6 +27,6 @@ public class InitGraph {
 		return graph;
 	}
 	public int getSizeArray(){
-		return edgeList.size();
+		return edgeList.get(edgeList.size()-1).getSource().getIndex()+1;
 	}
 }
