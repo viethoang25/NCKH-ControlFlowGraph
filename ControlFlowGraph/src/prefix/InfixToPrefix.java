@@ -22,7 +22,7 @@ public class InfixToPrefix {
 		for (Character c: infix.toCharArray()) if (c != ' ') temp += c;
 		infix = new String(temp);
 		temp = new String();
-		if (infix.charAt(0) != '(' || infix.charAt(0) != ')') kt = isOperator(infix.charAt(0)+"");
+		if (infix.charAt(0) != '(') kt = isOperator(infix.charAt(0)+"");
 		for (Character c: infix.toCharArray()){
 			if (c == '(' || c == ')') {
 				if (temp.equals("") == true) this.infix.add(c.toString());
@@ -259,7 +259,7 @@ public class InfixToPrefix {
 	
 	
 //	public static void main(String[] args) {
-//		String str = "!(a != b)";
+//		String str = "(arr_0+(4)) < (num+5)";
 //		InfixToPrefix a = new InfixToPrefix();
 //		a.setInfix(str);
 //	}
