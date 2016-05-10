@@ -3,13 +3,19 @@ package coverage;
 import java.util.ArrayList;
 import java.util.List;
 
+import file.FileManager;
+import node.BaseNode;
+
 public class DFS {
 	private List<List<Boolean>> graph = new ArrayList<>();
 	private List<Boolean> free;
 	private int n;
 	private List<Integer> path;
-	private List<List<Integer>> testPath = new ArrayList<>();
-	public DFS(int sizeArray, List<List<Boolean>> graph){
+	private List<List<Integer>> testPath;
+	private List<List<BaseNode>> nodeTestPath;
+	private List<BaseNode> listBaseNode;
+	public DFS(int sizeArray, List<List<Boolean>> graph, List<BaseNode> listBaseNode){
+		testPath = new ArrayList<>();
 		this.n = sizeArray;
 		this.graph = graph;
 		free = new ArrayList<>();
@@ -18,6 +24,7 @@ public class DFS {
 			free.add(true);
 			path.add(null);
 		}
+		this.listBaseNode = listBaseNode;
 	}
 	public void doDFS(int v, int startVertex, int endVertex){
 		if (v != endVertex){
@@ -48,8 +55,23 @@ public class DFS {
 		testPath.add(temp);
 	}
 	
-	public List<List<Integer>> getTestPath(){
-		return this.testPath;
+	public List<List<BaseNode>> getTestPath(){
+		nodeTestPath = new ArrayList<>();
+		for (int i=0; i<testPath.size(); i++) {
+			List<BaseNode> temp = new ArrayList<>();
+			nodeTestPath.add(temp);
+		}
+		for (int i=0; i<testPath.size(); i++){
+			for (int j=0; j<testPath.get(i).size(); j++){
+				for (BaseNode w : listBaseNode){
+					if (w.getIndex() == testPath.get(i).get(j)) {
+						nodeTestPath.get(i).add(w);
+						break;
+					}
+				}
+			}
+		}
+		return this.nodeTestPath;
 	}
 	/*public void running(int startVertex, int endVertex){
 		int v = endVertex;
