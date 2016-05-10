@@ -1,0 +1,9 @@
+void findMaxMin(int a[])
+{
+	int max = a[0];
+	int min
+	if(max < 3){
+		max = 3;
+	}
+	return;
+}

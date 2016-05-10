@@ -82,6 +82,8 @@ public class PathConstraint {
 				String exp = node.getContent();
 				exp = exp.replaceAll(";", "");
 				exp = exp.replaceAll("\\s+", "");
+				if (!exp.contains("="))
+					continue;
 				String[] element = exp.split("=");
 				for (String name : variableList.keySet()) {
 					if (contain(element[1], name)) {

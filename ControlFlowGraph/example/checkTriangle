@@ -1,0 +1,28 @@
+boolean checkTriangle(int a, int b, int c)
+{
+	int i = 0;
+	if((a+b) > c )  
+    {  
+        if((b+c) > a)  
+        {  
+            if((a+c) > b)   
+            {  
+                i = 1;
+            }  
+            else  
+            {  
+                i = 0;
+            }  
+        }  
+        else  
+        {  
+            i = 0;
+        }  
+    }  
+    else  
+    {  
+        i = 0;
+    }  
+  
+    return 0; 
+}

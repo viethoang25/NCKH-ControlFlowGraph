@@ -391,14 +391,14 @@ public class CfgTree {
 	private BaseEdge getEdgeAtEndNode(BaseNode node) {
 		BaseEdge edge = null;
 		BaseNode parentNode = nodeList.get(node.getParentId());
-		while(parentNode.isEnd()){
+		/*while(parentNode.isEnd()){
 			parentNode = nodeList.get(parentNode.getParentId());
-		}
+		}*/
 		if (parentNode instanceof IfNode) {
 			// check algorithm ?
-			/*while(parentNode.isEnd() && nodeList.get(parentNode.getParentId()) instanceof IfNode){
+			while(parentNode.isEnd() && nodeList.get(parentNode.getParentId()) instanceof IfNode){
 				parentNode = nodeList.get(parentNode.getParentId());
-			}*/
+			}
 			
 			int nodeId = -1;
 			int minPos = 10000;
