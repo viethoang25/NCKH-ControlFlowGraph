@@ -10,6 +10,13 @@ public class Position {
 		this.end = end;
 	}
 
+	public Position(Position pos) {
+		if (pos != null) {
+			this.start = pos.start;
+			this.end = pos.end;
+		}
+	}
+
 	public String toString() {
 		return start + ", " + end;
 	}

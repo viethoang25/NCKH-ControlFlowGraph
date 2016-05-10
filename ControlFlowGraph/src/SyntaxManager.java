@@ -176,7 +176,7 @@ public class SyntaxManager {
 		CLexer lexer = new CLexer(new ANTLRInputStream(str));
 		CLexer temp = new CLexer(new ANTLRInputStream(str));
 		CParser parser = new CParser(new CommonTokenStream(lexer));
-		// parser.removeErrorListeners();
+		parser.removeErrorListeners();
 		parser.reset();
 		parser.declaration();
 		if (parser.getNumberOfSyntaxErrors() > 0)
@@ -194,7 +194,7 @@ public class SyntaxManager {
 		}
 		CLexer lexer = new CLexer(new ANTLRInputStream(temp));
 		CParser parser = new CParser(new CommonTokenStream(lexer));
-		// parser.removeErrorListeners();
+		parser.removeErrorListeners();
 		parser.reset();
 		parser.expression();
 		if (parser.getNumberOfSyntaxErrors() > 0)

@@ -95,8 +95,11 @@ public class CfgTree {
 					node.setStatementPosition(state);
 					nodeList.add(node);
 				} else if (s.getType() == Constants.STRUCTURE_FOR) {
-					ForNode node = new ForNode(index, expContent.toString(),
+					// Just check the expression
+					ForNode node = new ForNode(index, getSourceAt(expList.get(1)),
 							s.getContent());
+					/*ForNode node = new ForNode(index, expContent.toString(),
+							s.getContent());*/
 					node.setExpressionPosition(expList);
 					node.setStatementPosition(state);
 					nodeList.add(node);

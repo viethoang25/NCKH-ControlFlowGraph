@@ -25,6 +25,17 @@ public class BaseNode {
 		this.isEnd = false;
 	}
 
+	public BaseNode clone() {
+		BaseNode temp = new BaseNode();
+		temp.index = index;
+		temp.functionId = functionId;
+		temp.content = new String(content);
+		temp.position = new Position(position);
+		temp.parentId = parentId;
+		temp.isEnd = isEnd;
+		return temp;
+	}
+
 	public int getIndex() {
 		return index;
 	}

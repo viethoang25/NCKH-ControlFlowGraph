@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import prefix.InfixToPrefix;
+import edge.BaseEdge;
 import file.FileManager;
 import variable.VariableInfor;
 import node.BaseNode;
@@ -25,8 +26,25 @@ public class PathConstraint {
 	protected List<String> expressionList;
 	protected StringBuilder z3Input;
 
-	public PathConstraint(List<BaseNode> nodeList) {
-		this.nodeList = nodeList;
+	public PathConstraint(List<BaseNode> nodeList, List<BaseEdge> edgeList) {
+		this.nodeList = new ArrayList<>();
+		for (int i = nodeList.size() - 1; i >= 0; i--) {
+			this.nodeList.add(nodeList.get(i).clone());
+		}
+
+		for (BaseEdge e : edgeList) {
+			if (e.getLabel() == Constants.LABEL_FALSE) {
+				for (int i = 0; i < this.nodeList.size() - 1; i++) {
+					BaseNode node = this.nodeList.get(i);
+					BaseNode des = this.nodeList.get(i + 1);
+					if (node.getIndex() == e.getSource().getIndex()
+							&& des.getIndex() == e.getDestination().getIndex()) {
+						// Update expression content
+						node.setContent("! (" + node.getContent() + ")");
+					}
+				}
+			}
+		}
 		init();
 		createVariable();
 		createInput();
@@ -42,12 +60,15 @@ public class PathConstraint {
 	}
 
 	private void createVariable() {
-		char c = 'a';
+		// char c = 'a';
 		for (VariableInfor v : allVariableList) {
 			if (v.isParameter()) {
-				variableList.put(v.getName(), c + "");
+				// if(!v.isArray())
+				// variableList.put(v.getName(), c + "");
+				if (!v.isArray())
+					variableList.put(v.getName(), v.getName());
 			}
-			c++;
+			// c++;
 		}
 		for (BaseNode node : nodeList) {
 			if (node instanceof DeclarationNode) {
@@ -68,13 +89,23 @@ public class PathConstraint {
 								variableList.get(name));
 					}
 				}
-				variableList.put(element[0], "(" + element[1] + ")");
+
+				if (element[0].contains("[")) {
+					// Array
+					String arrElement = element[0].replaceAll("\\[", "_")
+							.replaceAll("\\]", "");
+					variableList.put(arrElement, "(" + element[1] + ")");
+				} else {
+					// Normal
+					variableList.put(element[0], "(" + element[1] + ")");
+				}
 			} else {
 				if (node instanceof IfNode || node instanceof DoNode
 						|| node instanceof WhileNode || node instanceof ForNode) {
 					String exp = node.getContent();
 					for (String name : variableList.keySet()) {
 						exp = exp.replaceAll(name, variableList.get(name));
+						exp = exp.replaceAll("\\[", "_").replaceAll("\\]", "");
 					}
 					expressionList.add(exp);
 				}
@@ -83,17 +114,24 @@ public class PathConstraint {
 	}
 
 	private void createInput() {
-		char c = 'a';
+		// char c = 'a';
 		for (VariableInfor v : allVariableList) {
 			if (v.isParameter()) {
 				String type = v.getType() == Constants.TYPE_INT ? "Int"
 						: "Real";
-				z3Input.append("(declare-fun " + c + " () " + type + ")\n");
+				if (!v.isArray()) {
+					z3Input.append("(declare-fun " + v.getName() + " () "
+							+ type + ")\n");
+				} else {
+					z3Input.append("(declare-fun " + v.getName() + " (Int) "
+							+ type + ")\n");
+				}
 			}
-			c++;
+			// c++;
 		}
 
 		for (String exp : expressionList) {
+			System.out.println(exp);
 			InfixToPrefix infix = new InfixToPrefix();
 			infix.setInfix(exp);
 			String temp = infix.getPrefix();
