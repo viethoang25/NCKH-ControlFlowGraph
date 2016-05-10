@@ -1,9 +1,14 @@
-void findMaxMin(int a[])
+void findMaxMin(int n, int a[])
 {
 	int max = a[0];
-	int min
-	if(max < 3){
-		max = 3;
+	int min = a[0];
+	int i = 1;
+	for(i = 1; i < n; i++)
+	{
+		if(max < a[i])
+			max = a[i];
+		if(min > a[i])
+			min = a[i];
 	}
 	return;
 }

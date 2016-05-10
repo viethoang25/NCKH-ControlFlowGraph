@@ -1,0 +1,13 @@
+int sumOdd(int n, int a[])
+{
+	int sum = 0;
+	int i = 0;
+	while(i < n)
+	{
+		if (a[i] % 2 != 0){
+			sum = sum + a[i];
+		}
+		i = i + 1;
+	}
+	return sum;
+}
