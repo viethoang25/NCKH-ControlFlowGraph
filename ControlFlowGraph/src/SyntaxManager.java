@@ -108,53 +108,65 @@ public class SyntaxManager {
 	public void distinguishStatementType() {
 		for (BaseStatement s : statementList) {
 			String content = getSourceAt(s.getContent());
-			if (content.contains("if"))
-				s.setType(Constants.STRUCTURE_IF);
-			else if (content.contains("switch"))
-				s.setType(Constants.STRUCTURE_SWITCH);
-			else if (content.contains("do"))
-				s.setType(Constants.STRUCTURE_DO);
-			else if (content.contains("while"))
-				s.setType(Constants.STRUCTURE_WHILE);
-			else if (content.contains("for"))
-				s.setType(Constants.STRUCTURE_FOR);
-			else if (getDeclarationType(content) != null)
-				s.setType(Constants.STRUCTURE_DECLARATION);
-			else if (checkExpressionType(content))
-				s.setType(Constants.STRUCTURE_EXPRESSION);
+			if (s instanceof SelectionStatement) {
+				if (content.contains("if"))
+					s.setType(Constants.STRUCTURE_IF);
+				else if (content.contains("switch"))
+					s.setType(Constants.STRUCTURE_SWITCH);
+			} else if (s instanceof IterationStatement) {
+				if (content.contains("do"))
+					s.setType(Constants.STRUCTURE_DO);
+				else if (content.contains("while"))
+					s.setType(Constants.STRUCTURE_WHILE);
+				else if (content.contains("for"))
+					s.setType(Constants.STRUCTURE_FOR);
+			} else {
+				if (getDeclarationType(content) != null)
+					s.setType(Constants.STRUCTURE_DECLARATION);
+				else if (checkExpressionType(content))
+					s.setType(Constants.STRUCTURE_EXPRESSION);
+				else if (content.contains("return"))
+					s.setType(Constants.STRUCTURE_RETURN);
+				else if (content.contains("break"))
+					s.setType(Constants.STRUCTURE_BREAK);
+			}
 		}
 	}
-	
+
 	public void distinguishVariableType() {
-		for(VariableInfor var : variableList) {
-			for(FunctionInfor f : functionList){
-				if(f.getParameter().cover(var.getPosition().start)){
+		for (VariableInfor var : variableList) {
+			for (FunctionInfor f : functionList) {
+				if (f.getParameter().cover(var.getPosition().start)) {
 					// Set is parameter
 					var.setParameter(true);
 					// Set type
 					String str = getSourceAt(f.getParameter());
 					String[] paras = str.split(",");
-					for(int i = 0; i < paras.length; i++)
+					for (int i = 0; i < paras.length; i++)
 						paras[i] = paras[i] + ";";
-					for(int i = 0; i < paras.length; i++){
+					for (int i = 0; i < paras.length; i++) {
 						String type = getDeclarationType(paras[i]);
-						
-						if(type == null) continue;
-						else if(type.equals("int"))
+
+						if (type == null)
+							continue;
+						else if (type.equals("int"))
 							var.setType(Constants.TYPE_INT);
-						else var.setType(Constants.TYPE_REAL);
+						else
+							var.setType(Constants.TYPE_REAL);
 					}
 				}
 			}
-			
-			for(BaseStatement s : statementList) {
-				if(s.getContent().cover(var.getPosition().start)){
+
+			for (BaseStatement s : statementList) {
+				if (s.getContent().cover(var.getPosition().start)) {
 					String type = getDeclarationType(getSourceAt(s.getContent()));
-					
-					if(type == null) continue;
-					else if(type.equals("int"))
+
+					if (type == null)
+						continue;
+					else if (type.equals("int"))
 						var.setType(Constants.TYPE_INT);
-					else var.setType(Constants.TYPE_REAL);
+					else
+						var.setType(Constants.TYPE_REAL);
 				}
 			}
 		}
@@ -174,10 +186,10 @@ public class SyntaxManager {
 			return t.getText();
 		}
 	}
-	
-	public boolean checkExpressionType(String str){
+
+	public boolean checkExpressionType(String str) {
 		String temp = new String(str);
-		if(temp.contains(";")){
+		if (temp.contains(";")) {
 			temp = temp.substring(0, temp.lastIndexOf(';'));
 		}
 		CLexer lexer = new CLexer(new ANTLRInputStream(temp));
@@ -225,13 +237,13 @@ public class SyntaxManager {
 		}
 	}
 
-	public void printVariableList(){
-		for(VariableInfor var : variableList){
+	public void printVariableList() {
+		for (VariableInfor var : variableList) {
 			System.out.println("-------------");
 			System.out.println(var.toString());
 		}
 	}
-	
+
 	private String getSourceAt(Position position) {
 		return this.source.substring(position.start, position.end + 1);
 	}

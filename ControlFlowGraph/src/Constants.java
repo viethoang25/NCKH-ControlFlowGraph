@@ -8,6 +8,8 @@ public class Constants {
 	public static final int STRUCTURE_FOR = 5;
 	public static final int STRUCTURE_DECLARATION = 6;
 	public static final int STRUCTURE_EXPRESSION = 7;
+	public static final int STRUCTURE_RETURN = 8;
+	public static final int STRUCTURE_BREAK = 9;
 	
 	public static final int LABEL_TRUE = 1;
 	public static final int LABEL_FALSE = 2;

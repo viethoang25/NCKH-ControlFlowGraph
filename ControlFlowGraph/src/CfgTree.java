@@ -5,6 +5,7 @@ import java.util.List;
 
 import position.Position;
 import node.BaseNode;
+import node.BreakNode;
 import node.CallNode;
 import node.DeclarationNode;
 import node.DoNode;
@@ -12,6 +13,7 @@ import node.ExpressionNode;
 import node.ForNode;
 import node.FunctionNode;
 import node.IfNode;
+import node.ReturnNode;
 import node.WhileNode;
 import statement.BaseStatement;
 import statement.IterationStatement;
@@ -86,7 +88,6 @@ public class CfgTree {
 					node.setExpressionPosition(expList.get(0));
 					node.setStatementPosition(state);
 					nodeList.add(node);
-
 				} else if (s.getType() == Constants.STRUCTURE_WHILE) {
 					WhileNode node = new WhileNode(index,
 							expContent.toString(), s.getContent());
@@ -122,6 +123,12 @@ public class CfgTree {
 								.getContent()), s.getContent()));
 					} else if (s.getType() == Constants.STRUCTURE_EXPRESSION) {
 						nodeList.add(new ExpressionNode(index, getSourceAt(s
+								.getContent()), s.getContent()));
+					} else if (s.getType() == Constants.STRUCTURE_RETURN) {
+						nodeList.add(new ReturnNode(index, getSourceAt(s
+								.getContent()), s.getContent()));
+					} else if (s.getType() == Constants.STRUCTURE_BREAK) {
+						nodeList.add(new BreakNode(index, getSourceAt(s
 								.getContent()), s.getContent()));
 					} else {
 						// Create normal node
@@ -180,8 +187,15 @@ public class CfgTree {
 				}
 
 				// Create edge false
-				int falseId = -1;
 				Position fp = ((IfNode) node).getFalsePosition();
+				if (fp == null && node.isEnd()) {
+					edge = getEdgeAtEndNode(node);
+					edge.setLabel(Constants.LABEL_FALSE);
+					edgeList.add(edge);
+					continue;
+				}
+				
+				int falseId = -1;
 				if (fp != null)
 					for (int j = 0; j < nodeList.size(); j++) {
 						int startPos = nodeList.get(j).getPosition().start;
@@ -333,6 +347,11 @@ public class CfgTree {
 					edge.setLabel(Constants.LABEL_FALSE);
 					edgeList.add(edge);
 				}
+			} else if (node instanceof ReturnNode) {
+				BaseEdge edge = new BaseEdge();
+				BaseNode functionNode = nodeList.get(node.getFunctionId());
+				edge.setNode(node, functionNode);
+				edgeList.add(edge);
 			} else {
 				if (node.isEnd()) {
 					BaseEdge edge = getEdgeAtEndNode(node);
@@ -369,7 +388,15 @@ public class CfgTree {
 	private BaseEdge getEdgeAtEndNode(BaseNode node) {
 		BaseEdge edge = null;
 		BaseNode parentNode = nodeList.get(node.getParentId());
+		while(parentNode.isEnd()){
+			parentNode = nodeList.get(parentNode.getParentId());
+		}
 		if (parentNode instanceof IfNode) {
+			// check algorithm ?
+			/*while(parentNode.isEnd() && nodeList.get(parentNode.getParentId()) instanceof IfNode){
+				parentNode = nodeList.get(parentNode.getParentId());
+			}*/
+			
 			int nodeId = -1;
 			int minPos = 10000;
 			for (int j = 0; j < nodeList.size(); j++) {
@@ -383,9 +410,10 @@ public class CfgTree {
 			if (nodeId != -1) {
 				edge = new BaseEdge();
 				edge.setNode(node, nodeList.get(nodeId));
-				// edgeList.add(edge);
+				//edgeList.add(edge);
 			}
 		} else if (parentNode instanceof WhileNode) {
+			
 			edge = new BaseEdge();
 			edge.setNode(node, parentNode);
 			// edgeList.add(edge);
@@ -521,7 +549,7 @@ public class CfgTree {
 			Position checkPos = new Position(start, end);
 			boolean isEnd = true;
 			for (BaseNode b : nodeList) {
-				if (b != n && b.getParentId() != n.getIndex()
+				if (b != n && /*b.getParentId() != n.getIndex()*/ !n.getPosition().cover(b.getPosition().start)
 						&& checkPos.cover(b.getPosition().start)) {
 					isEnd = false;
 					break;
@@ -549,8 +577,8 @@ public class CfgTree {
 
 	public void printNodeList() {
 		for (BaseNode n : nodeList) {
-			System.out.println(n.getIndex() + " ----- " + n.getParentId()
-					+ " ----- " + n.getPosition() + "\n"
+			System.out.println(n.getIndex() + " ----- " + n.isEnd()
+					+ " ----- " + n.getClass().getName() + "\n"
 					+ n.getContent());
 		}
 	}
