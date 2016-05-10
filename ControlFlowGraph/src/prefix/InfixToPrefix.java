@@ -22,6 +22,7 @@ public class InfixToPrefix {
 		for (Character c: infix.toCharArray()) if (c != ' ') temp += c;
 		infix = new String(temp);
 		temp = new String();
+		if (infix.charAt(0) != '(' || infix.charAt(0) != ')') kt = isOperator(infix.charAt(0)+"");
 		for (Character c: infix.toCharArray()){
 			if (c == '(' || c == ')') {
 				if (temp.equals("") == true) this.infix.add(c.toString());
@@ -104,7 +105,7 @@ public class InfixToPrefix {
 				this.theRealPrefix += "div ";
 			}else if (this.prefix.get(i).equals("%")){
 				this.theRealPrefix += "mod ";
-			}else if (this.prefix.get(i).equals("!")){
+			}else if (this.prefix.get(i).equals("!=") || this.prefix.get(i).equals("!")){
 				this.theRealPrefix += "not ";
 			}else{
 				this.theRealPrefix += this.prefix.get(i) + " ";
@@ -134,9 +135,11 @@ public class InfixToPrefix {
 		int i = 0;
 		int countOperand;
 		int countParentheses;
+		int standardOperand;
 		while (i < arr.size()){
 			if (isOperator(arr.get(i)) == true){
-				
+				if (arr.get(i).equals("!") == true) standardOperand = 1;
+				else standardOperand = 2;
 				countOperand = 0;
 				j = i - 1;
 				countParentheses = 0;
@@ -147,8 +150,8 @@ public class InfixToPrefix {
 						if (countParentheses == 0) countOperand++;
 					}
 					if (isOperator(arr.get(j)) == false && countParentheses == 0) countOperand++;
-					if (countOperand == 2){
-						if (arr.get(i).equals("!") == false){
+					if (countOperand == standardOperand){
+						if (arr.get(i).equals("!=") == false){
 							arr.add(i+1, "(");
 							arr.add(j, ")");
 							i+=3;
@@ -192,6 +195,7 @@ public class InfixToPrefix {
 		case "<":
 		case ">=":
 		case "<=":
+		case "!=":
 			return 4;
 		case "&":
 		case "|":
@@ -224,6 +228,7 @@ public class InfixToPrefix {
 		case "%":
 		case ">=":
 		case "<=":
+		case "!=":
 			return true;
 		default:
 			return false;
@@ -245,7 +250,6 @@ public class InfixToPrefix {
 	private List<String> convertStandard(List<String> arr){
 		for (int i=0; i<arr.size()-1; i++){
 			if (arr.get(i).equals("==")) arr.set(i, "=");
-			else if (arr.get(i).equals("!=")) arr.set(i, "!");
 			else if (arr.get(i).equals("&&")) arr.set(i, "&");
 			else if (arr.get(i).equals("||")) arr.set(i, "|");
 		}
@@ -255,7 +259,7 @@ public class InfixToPrefix {
 	
 	
 //	public static void main(String[] args) {
-//		String str = "(a_0 + 20)%2 != 0";
+//		String str = "!(a != b)";
 //		InfixToPrefix a = new InfixToPrefix();
 //		a.setInfix(str);
 //	}
