@@ -254,10 +254,10 @@ public class InfixToPrefix {
 	}
 	
 	
-	public static void main(String[] args) {
-		String str = "(a_0 + 20)%2 != 0";
-		InfixToPrefix a = new InfixToPrefix();
-		a.setInfix(str);
-	}
+//	public static void main(String[] args) {
+//		String str = "(a_0 + 20)%2 != 0";
+//		InfixToPrefix a = new InfixToPrefix();
+//		a.setInfix(str);
+//	}
 
 }
