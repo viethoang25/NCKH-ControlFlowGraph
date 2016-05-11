@@ -48,10 +48,12 @@ public class DFS {
 		int v = endVertex;
 		List<Integer> temp = new ArrayList<>();
 		while (v != startVertex){
+			System.out.print(v+" <- ");
 			temp.add(v);
 			free.set(v, true);
 			v = path.get(v);
 		}
+		System.out.println(startVertex);
 		temp.add(startVertex);
 		testPath.add(temp);
 	}
@@ -87,7 +89,7 @@ public class DFS {
 					if (this.nodeTestPath.get(i).get(j).getIndex() == this.startLoop){
 						while (count < this.listForBaseNode.size()) {
 							
-							temp = this.nodeTestPath.get(i);
+							temp = new ArrayList<>(this.nodeTestPath.get(i));
 							while (countLoop < this.amountLoop){
 								for (int w=this.listForBaseNode.get(count).size()-1; w>=0; w--)
 									temp.add(j+1, this.listForBaseNode.get(count).get(w));
