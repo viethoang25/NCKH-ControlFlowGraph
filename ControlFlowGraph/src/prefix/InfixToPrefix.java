@@ -127,17 +127,18 @@ public class InfixToPrefix {
 					prefix.set(i, new String("("+prefix.get(i).replaceAll("_", " ")+")"));
 					checkArr = false;
 				}else {
-					prefix.set(i, new String("("+prefix.get(i).replaceAll("_", " ")));
-					int count = 0;
-					for (int j=i+1; j<prefix.size(); j++){
-						if (prefix.get(j).equals("(")) count++;
-						else if (prefix.get(j).equals(")")) count--;
-						if (count == 0) {
-							prefix.add(j, ")");
-							checkArr = false;
-							break;
-						}
-					}
+					prefix.set(i, new String(prefix.get(i).replaceAll("_", " ")));
+					checkArr = false;
+//					int count = 0;
+//					for (int j=i+1; j<prefix.size(); j++){
+//						if (prefix.get(j).equals("(")) count++;
+//						else if (prefix.get(j).equals(")")) count--;
+//						if (count == 0) {
+//							prefix.add(j, ")");
+//							checkArr = false;
+//							break;
+//						}
+//					}
 				}
 			}
 		}
@@ -272,10 +273,10 @@ public class InfixToPrefix {
 	}
 	
 	
-//	public static void main(String[] args) {
-//		String str = "! (a_0 < a_(1+1))";
-//		InfixToPrefix a = new InfixToPrefix();
-//		a.setInfix(str);
-//	}
+	public static void main(String[] args) {
+		String str = "! (a_0 < a_(1+1))";
+		InfixToPrefix a = new InfixToPrefix();
+		a.setInfix(str);
+	}
 
 }
