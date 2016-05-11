@@ -2,6 +2,7 @@ package coverage;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import node.BaseNode;
 
 public class DFS {
@@ -47,12 +48,10 @@ public class DFS {
 		int v = endVertex;
 		List<Integer> temp = new ArrayList<>();
 		while (v != startVertex){
-			System.out.print(v+" <- ");
 			temp.add(v);
 			free.set(v, true);
 			v = path.get(v);
 		}
-		System.out.println(startVertex);
 		temp.add(startVertex);
 		testPath.add(temp);
 	}
@@ -107,6 +106,7 @@ public class DFS {
 				i++;
 			}
 		}
+		printTestPath();
 		return this.nodeTestPath;
 	}
 	
@@ -115,6 +115,16 @@ public class DFS {
 		this.amountLoop = amountLoop;
 		this.startLoop = startLoop;
 		this.haveLoop = true;
+	}
+	
+	private void printTestPath(){
+		System.out.println("Co "+this.nodeTestPath.size()+" Test Path");
+		for (int i=0; i<this.nodeTestPath.size(); i++){
+			for (BaseNode j: this.nodeTestPath.get(i)) {
+				System.out.print(j.getIndex()+" <- ");
+			}
+			System.out.println();
+		}
 	}
 	
 }
