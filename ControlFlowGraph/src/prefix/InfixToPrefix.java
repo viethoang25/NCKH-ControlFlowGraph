@@ -29,7 +29,7 @@ public class InfixToPrefix {
 				else{
 					this.infix.add(temp);
 					this.infix.add(c.toString());
-					kt = !kt;
+					if (temp.charAt(temp.length()-1) != '_') kt = !kt;
 					temp = new String();
 				}
 			}
@@ -123,8 +123,22 @@ public class InfixToPrefix {
 				}
 			}
 			if (checkArr == true) {
-				prefix.set(i, new String("("+prefix.get(i).replaceAll("_", " ")+")"));
-				checkArr = false;
+				if (prefix.get(i).charAt(prefix.get(i).length()-1) != '_'){
+					prefix.set(i, new String("("+prefix.get(i).replaceAll("_", " ")+")"));
+					checkArr = false;
+				}else {
+					prefix.set(i, new String("("+prefix.get(i).replaceAll("_", " ")));
+					int count = 0;
+					for (int j=i+1; j<prefix.size(); j++){
+						if (prefix.get(j).equals("(")) count++;
+						else if (prefix.get(j).equals(")")) count--;
+						if (count == 0) {
+							prefix.add(j, ")");
+							checkArr = false;
+							break;
+						}
+					}
+				}
 			}
 		}
 		return prefix;
@@ -137,8 +151,8 @@ public class InfixToPrefix {
 		int countParentheses;
 		int standardOperand;
 		while (i < arr.size()){
-			if (isOperator(arr.get(i)) == true){
-				if (arr.get(i).equals("!") == true) standardOperand = 1;
+			if (isOperator(arr.get(i)) == true || arr.get(i).charAt(arr.get(i).length()-1) == '_'){
+				if (arr.get(i).equals("!") == true || arr.get(i).charAt(arr.get(i).length()-1) == '_') standardOperand = 1;
 				else standardOperand = 2;
 				countOperand = 0;
 				j = i - 1;
@@ -259,7 +273,7 @@ public class InfixToPrefix {
 	
 	
 //	public static void main(String[] args) {
-//		String str = "(arr_0+(4)) < (num+5)";
+//		String str = "! (a_0 < a_(1+1))";
 //		InfixToPrefix a = new InfixToPrefix();
 //		a.setInfix(str);
 //	}
