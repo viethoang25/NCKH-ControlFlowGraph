@@ -577,6 +577,28 @@ public class CfgTree {
 		return this.sourceCode.substring(position.start, position.end + 1);
 	}
 
+	public int getStartLoop() {
+		for (BaseEdge e : edgeList) {
+			if ((e.getSource() instanceof DoNode)
+					|| (e.getSource() instanceof ForNode)
+					|| (e.getSource() instanceof WhileNode)) {
+				return e.getSource().getIndex();
+			}
+		}
+		return -1;
+	}
+
+	public List<Integer> getEndLoop() {
+		List<Integer> list = new ArrayList<>();
+		for (BaseEdge e : edgeList) {
+			int start = getStartLoop();
+			if (e.getSource().isEnd() && e.getDestination().getIndex() == start) {
+				list.add(e.getSource().getIndex());
+			}
+		}
+		return list;
+	}
+
 	private void sortAscNode() {
 		Comparator<BaseNode> comparator = new Comparator<BaseNode>() {
 			@Override
