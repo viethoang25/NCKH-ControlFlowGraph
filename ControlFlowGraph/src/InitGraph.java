@@ -26,6 +26,7 @@ public class InitGraph {
 	public List<List<Boolean>> getGraph(){
 		return graph;
 	}
+	
 	public int getSizeArray(){
 		return edgeList.get(edgeList.size()-1).getSource().getIndex()+1;
 	}

@@ -2,8 +2,6 @@ package coverage;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import file.FileManager;
 import node.BaseNode;
 
 public class DFS {
@@ -14,6 +12,10 @@ public class DFS {
 	private List<List<Integer>> testPath;
 	private List<List<BaseNode>> nodeTestPath;
 	private List<BaseNode> listBaseNode;
+	private List<List<BaseNode>> listForBaseNode = new ArrayList<>();
+	private Integer amountLoop = 0;
+	private Integer startLoop = 0;
+	private boolean haveLoop = false;
 	public DFS(int sizeArray, List<List<Boolean>> graph, List<BaseNode> listBaseNode){
 		testPath = new ArrayList<>();
 		this.n = sizeArray;
@@ -55,8 +57,8 @@ public class DFS {
 		testPath.add(temp);
 	}
 	
-	public List<List<BaseNode>> getTestPath(){
-		nodeTestPath = new ArrayList<>();
+	private List<List<BaseNode>> nodeTestPath(){
+		List<List<BaseNode>> nodeTestPath = new ArrayList<>();
 		for (int i=0; i<testPath.size(); i++) {
 			List<BaseNode> temp = new ArrayList<>();
 			nodeTestPath.add(temp);
@@ -71,16 +73,48 @@ public class DFS {
 				}
 			}
 		}
+		return nodeTestPath;
+	}
+	
+	public List<List<BaseNode>> getTestPath(){
+		this.nodeTestPath = nodeTestPath();
+		int count = 0;
+		int countLoop = 0;
+		List<BaseNode> temp;
+		int i = 0;
+		if (this.haveLoop == true){
+			while (i < this.nodeTestPath.size()){
+				for (int j=0; j<this.nodeTestPath.get(i).size(); j++) {
+					if (this.nodeTestPath.get(i).get(j).getIndex() == this.startLoop){
+						while (count < this.listForBaseNode.size()) {
+							
+							temp = this.nodeTestPath.get(i);
+							while (countLoop < this.amountLoop){
+								for (int w=this.listForBaseNode.get(count).size()-1; w>=0; w--)
+									temp.add(j+1, this.listForBaseNode.get(count).get(w));
+								countLoop++;
+							}
+							countLoop = 0;
+							this.nodeTestPath.add(i+1, temp);
+							count++;
+						}
+						this.nodeTestPath.remove(i);
+						i += count - 1;
+						count = 0;
+						break;
+					}
+				}
+				i++;
+			}
+		}
 		return this.nodeTestPath;
 	}
-	/*public void running(int startVertex, int endVertex){
-		int v = endVertex;
-		doDFS(startVertex);
-		while (v != startVertex){
-			System.out.print(v+" <- ");
-			v = path[v];
-		}
-		System.out.println(startVertex);
-	}*/
+	
+	public void setForTestPath(List<List<BaseNode>> forNodeTestPath, Integer amountLoop, Integer startLoop) {
+		this.listForBaseNode = forNodeTestPath;
+		this.amountLoop = amountLoop;
+		this.startLoop = startLoop;
+		this.haveLoop = true;
+	}
 	
 }
