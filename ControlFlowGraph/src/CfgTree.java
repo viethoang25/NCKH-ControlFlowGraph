@@ -400,12 +400,16 @@ public class CfgTree {
 		if (parentNode instanceof IfNode) {
 			// check algorithm ?
 			if (parentNode.isEnd()) {
+				int temp = parentNode.getIndex();
 				while (parentNode.isEnd()
 						&& nodeList.get(parentNode.getParentId()) instanceof IfNode) {
+					temp = parentNode.getIndex();
 					parentNode = nodeList.get(parentNode.getParentId());
 				}
+				parentNode = nodeList.get(temp);
 				BaseEdge pe = getEdgeAtEndNode(parentNode);
 				edge = new BaseEdge();
+				System.out.println("CHECK OUT"+node.getIndex() +"-----"+pe.getDestination().getIndex());
 				edge.setNode(node, pe.getDestination());
 			} else {
 				int nodeId = -1;
