@@ -409,7 +409,6 @@ public class CfgTree {
 				parentNode = nodeList.get(temp);
 				BaseEdge pe = getEdgeAtEndNode(parentNode);
 				edge = new BaseEdge();
-				System.out.println("CHECK OUT"+node.getIndex() +"-----"+pe.getDestination().getIndex());
 				edge.setNode(node, pe.getDestination());
 			} else {
 				int nodeId = -1;
