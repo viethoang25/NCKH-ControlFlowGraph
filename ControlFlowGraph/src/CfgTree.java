@@ -598,6 +598,16 @@ public class CfgTree {
 		}
 		return list;
 	}
+	
+	public List<BaseNode> getEndNode(){
+		List<BaseNode> list = new ArrayList<>();
+		for (BaseEdge e : edgeList) {
+			if (e.getDestination().getIndex() == e.getDestination().getFunctionId()){
+				list.add(e.getSource());
+			}
+		}
+		return list;
+	}
 
 	private void sortAscNode() {
 		Comparator<BaseNode> comparator = new Comparator<BaseNode>() {
