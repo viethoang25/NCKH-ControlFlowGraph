@@ -1,0 +1,28 @@
+boolean checkTriangle(int a[])
+{
+	int i = 0;
+	if((a[0]+a[1]) > a[2] )  
+    {  
+        if((a[1]+a[2]) > a[0])  
+        {  
+            if((a[0]+a[2]) > a[1])   
+            {  
+                i = 1;
+            }  
+            else  
+            {  
+                i = 0;
+            }  
+        }  
+        else  
+        {  
+            i = 0;
+        }  
+    }  
+    else  
+    {  
+        i = 0;
+    }  
+  
+    return 0; 
+}

@@ -61,6 +61,11 @@ public class FileManager {
 		}
 	}
 	
+	public void readFile(File file) {
+		this.file = file;
+		readFile();
+	}
+	
 	public void readFile(String fileName) {
 		openFile(fileName);
 		readFile();

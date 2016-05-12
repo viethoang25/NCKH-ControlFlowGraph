@@ -133,7 +133,7 @@ public class PathConstraint {
 		}
 
 		for (String exp : expressionList) {
-			System.out.println(exp);
+			// System.out.println(exp);
 			InfixToPrefix infix = new InfixToPrefix();
 			infix.setInfix(exp);
 			String temp = infix.getPrefix();

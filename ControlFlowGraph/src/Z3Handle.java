@@ -32,6 +32,14 @@ public class Z3Handle {
 		}
 	}
 	
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		str.append(sat);
+		str.append("\n");
+		str.append(model);
+		return str.toString();
+	}
+	
 	public void printResult(){
 		System.out.println(sat);
 		System.out.println(model);
