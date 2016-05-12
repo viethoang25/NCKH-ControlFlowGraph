@@ -273,10 +273,10 @@ public class InfixToPrefix {
 	}
 	
 	
-	public static void main(String[] args) {
-		String str = "! (a_0 < a_(1+1))";
-		InfixToPrefix a = new InfixToPrefix();
-		a.setInfix(str);
-	}
+//	public static void main(String[] args) {
+//		String str = "! (a_0 < a_(1+1))";
+//		InfixToPrefix a = new InfixToPrefix();
+//		a.setInfix(str);
+//	}
 
 }

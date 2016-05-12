@@ -48,12 +48,12 @@ public class DFS {
 		int v = endVertex;
 		List<Integer> temp = new ArrayList<>();
 		while (v != startVertex){
-			System.out.print(v+" <- ");
+//			System.out.print(v+" <- ");
 			temp.add(v);
 			free.set(v, true);
 			v = path.get(v);
 		}
-		System.out.println(startVertex);
+//		System.out.println(startVertex);
 		temp.add(startVertex);
 		testPath.add(temp);
 	}
@@ -108,7 +108,7 @@ public class DFS {
 				i++;
 			}
 		}
-		printTestPath();
+//		printTestPath();
 		return this.nodeTestPath;
 	}
 	
@@ -127,6 +127,15 @@ public class DFS {
 			}
 			System.out.println();
 		}
+	}
+	
+	public void setFreePathToFree() {
+		for (int i=0; i<this.n; i++){
+			free.set(i, true);
+			path.set(i, null);
+		}
+		testPath = new ArrayList<>();
+		nodeTestPath = new ArrayList<>();
 	}
 	
 }
