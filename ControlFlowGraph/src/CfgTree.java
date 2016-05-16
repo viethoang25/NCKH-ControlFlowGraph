@@ -601,11 +601,12 @@ public class CfgTree {
 		}
 		return list;
 	}
-	
-	public List<BaseNode> getEndNode(){
+
+	public List<BaseNode> getEndNode() {
 		List<BaseNode> list = new ArrayList<>();
 		for (BaseEdge e : edgeList) {
-			if (e.getDestination().getIndex() == e.getDestination().getFunctionId()){
+			if (e.getDestination().getIndex() == e.getDestination()
+					.getFunctionId()) {
 				list.add(e.getSource());
 			}
 		}
@@ -655,6 +656,10 @@ public class CfgTree {
 
 	public List<BaseNode> getNodeList() {
 		return nodeList;
+	}
+
+	public int getMaxVertex() {
+		return nodeList.get(nodeList.size() - 1).getIndex();
 	}
 
 }

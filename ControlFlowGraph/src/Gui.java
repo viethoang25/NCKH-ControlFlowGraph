@@ -17,6 +17,9 @@ import java.io.File;
 import javax.swing.JLabel;
 
 import file.FileManager;
+import javax.swing.JComboBox;
+import java.awt.event.ItemListener;
+import java.awt.event.ItemEvent;
 
 public class Gui extends JFrame {
 
@@ -28,6 +31,8 @@ public class Gui extends JFrame {
 	private JButton btnOpen, btnResult;
 	private JTextPane txtContent, txtResult;
 	private JTextField txtDepth;
+	private JComboBox<String> cbxCoverage;
+	private int resultCover;
 
 	public Gui() {
 		initGui();
@@ -69,13 +74,26 @@ public class Gui extends JFrame {
 
 		txtDepth = new JTextField();
 		txtDepth.setText("0");
-		txtDepth.setBounds(404, 11, 121, 20);
+		txtDepth.setBounds(479, 11, 46, 20);
 		contentPane.add(txtDepth);
 		txtDepth.setColumns(10);
 
 		JLabel lblDepth = new JLabel("Depth :");
-		lblDepth.setBounds(359, 14, 46, 14);
+		lblDepth.setBounds(423, 14, 46, 14);
 		contentPane.add(lblDepth);
+
+		String[] item = { "edge", "vertex" };
+		cbxCoverage = new JComboBox(item);
+		cbxCoverage.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				if (cbxCoverage.getSelectedItem() == "edge") {
+					resultCover = Constants.COVERAGE_EDGE;
+				} else
+					resultCover = Constants.COVERAGE_VERTEX;
+			}
+		});
+		cbxCoverage.setBounds(359, 11, 54, 20);
+		contentPane.add(cbxCoverage);
 	}
 
 	private void handleAction() {
@@ -96,7 +114,7 @@ public class Gui extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				if (file != null && !txtDepth.getText().isEmpty()) {
 					application = new Application(file, Integer
-							.parseInt(txtDepth.getText()));
+							.parseInt(txtDepth.getText()), resultCover);
 					txtResult.setText(application.getResult());
 				}
 			}

@@ -16,4 +16,7 @@ public class Constants {
 	
 	public static final int TYPE_INT = 1;
 	public static final int TYPE_REAL = 2;
+	
+	public static final int COVERAGE_VERTEX = 1;
+	public static final int COVERAGE_EDGE = 2;
 }

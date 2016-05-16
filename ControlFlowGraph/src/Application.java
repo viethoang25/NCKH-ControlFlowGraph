@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import node.BaseNode;
+import coverage.CoverageVertex;
 import coverage.DFS;
 import file.FileManager;
 
@@ -11,10 +12,10 @@ public class Application {
 	private FileManager fileManager;
 	private CfgTree cfgTree;
 	private InitGraph initGraph;
-	//private DFS dfs;
+	// private DFS dfs;
 	private List<List<BaseNode>> allTestPath;
 
-	public Application(File file, int depth) {
+	public Application(File file, int depth, int coverage) {
 		fileManager = FileManager.getInstance();
 		fileManager.readFile(file);
 
@@ -31,15 +32,23 @@ public class Application {
 			dfs.setForTestPath(loopDfs.getTestPath(), depth,
 					cfgTree.getStartLoop());
 		}
-		
+
 		allTestPath = new ArrayList<>();
-		for(BaseNode n : cfgTree.getEndNode()){
+		for (BaseNode n : cfgTree.getEndNode()) {
 			dfs.doDFS(0, 0, n.getIndex());
-			for(List<BaseNode> list : dfs.getTestPath()){
+			for (List<BaseNode> list : dfs.getTestPath()) {
 				allTestPath.add(list);
 			}
 			dfs.setFreePathToFree();
 		}
+
+		if (coverage == Constants.COVERAGE_VERTEX) {
+			CoverageVertex coverageVertex = new CoverageVertex(allTestPath,
+					cfgTree.getMaxVertex());
+			allTestPath = coverageVertex.getTestPathCoverageVertex();
+		}
+
+		printf();
 	}
 
 	public Application(String file, int depth) {
@@ -48,7 +57,7 @@ public class Application {
 		fileManager.readFile(file);
 
 		cfgTree = new CfgTree(fileManager.getData());
-
+		
 		initGraph = new InitGraph();
 		DFS dfs = new DFS(initGraph.getSizeArray(), initGraph.getGraph(),
 				cfgTree.getNodeList());
@@ -60,20 +69,36 @@ public class Application {
 			dfs.setForTestPath(loopDfs.getTestPath(), depth,
 					cfgTree.getStartLoop());
 		}
-		
-		for(BaseNode n : cfgTree.getEndNode()){
+
+		for (BaseNode n : cfgTree.getEndNode()) {
 			dfs.doDFS(0, 0, n.getIndex());
-			for(List<BaseNode> list : dfs.getTestPath()){
+			for (List<BaseNode> list : dfs.getTestPath()) {
 				allTestPath.add(list);
 			}
 			dfs.setFreePathToFree();
 		}
 	}
+	
+	public void printf(){
+		System.out.println("\nCFG NODE");
+		cfgTree.printNodeList();
+		System.out.println("\nCFG EDGE");
+		cfgTree.printEdgeList();
+		System.out.println("\nTEST PATH");
+		System.out.println(getTestPath());
+		System.out.println("\nRESULT");
+		System.out.println(getResult());
+		
+	}
 
 	public String getResult() {
 		StringBuilder result = new StringBuilder();
-		result.append("Number of test path : " + allTestPath.size()
-				+ "\n");
+		if (allTestPath == null) {
+			result.append("Number of test path 0");
+			return result.toString();
+		}
+		result.append("Number of test path : " + allTestPath.size() + "\n");
+		result.append("\n" + getTestPath());
 		int i = 1;
 		for (List<BaseNode> list : allTestPath) {
 			result.append("\n------< " + i + " >------\n");
@@ -85,6 +110,17 @@ public class Application {
 			i++;
 		}
 
+		return result.toString();
+	}
+
+	public String getTestPath() {
+		StringBuilder result = new StringBuilder();
+		for (List<BaseNode> list : allTestPath) {
+			for (BaseNode n : list) {
+				result.append(n.getIndex() + "<--");
+			}
+			result.append("\n");
+		}
 		return result.toString();
 	}
 }

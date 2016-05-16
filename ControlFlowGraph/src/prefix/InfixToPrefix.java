@@ -111,7 +111,7 @@ public class InfixToPrefix {
 				this.theRealPrefix += this.prefix.get(i) + " ";
 			}
 		}
-		System.out.println(this.theRealPrefix);
+		//System.out.println(this.theRealPrefix);
 	}
 	
 	private List<String> checkArrayInPrefix(List<String> prefix) {
