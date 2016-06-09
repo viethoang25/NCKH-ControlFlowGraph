@@ -8,5 +8,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/antlr-4.4-complete.jar"/>
+	<classpathentry kind="lib" path="E:/tools/z3-master/build/com.microsoft.z3.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="E:/tools/z3-master/build"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

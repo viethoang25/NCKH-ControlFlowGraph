@@ -1,0 +1,10 @@
+MaSV|TenSV|MaHP|TenHP
+SV0001|Nguyễn Văn A|HP0001|Hóa đại cương
+SV0001|Nguyễn Văn A|HP0002|Kinh tế ngành
+SV0002|Trần Thị B|HP0001|Hóa đại cương
+SV0002|Trần Thị B|HP0003|Giải tích 1
+SV0002|Trần Thị B|HP0004|Giải tích 2
+SV0003|Đinh Văn C|HP0002|Kinh tế ngành
+SV0004|Nguyễn Thị D|HP0001|Hóa đại cương
+SV0004|Nguyễn Thị D|HP0002|Kinh tế ngành
+SV0004|Nguyễn Thị D|HP0003|Giải tích 1

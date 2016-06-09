@@ -1,0 +1,5 @@
+Username|Password|MaSo|PhanQuyen
+admin|123456|0|0
+teacher1|123456|GV0001|1
+sv1|123456|SV0001|2
+sv2|123456|SV0002|2
